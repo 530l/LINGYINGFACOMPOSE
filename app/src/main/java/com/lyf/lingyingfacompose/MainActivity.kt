@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,8 @@ import com.lyf.lingyingfacompose.components.text_field.HintComposeWithTextField
 import com.lyf.lingyingfacompose.components.text_field.PasswordTextField
 import com.lyf.lingyingfacompose.components.text_field.VerticalSpace
 import com.lyf.lingyingfacompose.theme.LINGYINGFACOMPOSETheme
+import com.lyf.lingyingfacompose.ui.effect.LaunchedEffectScreen
+import com.lyf.lingyingfacompose.ui.effect.SideEffectScreen
 import com.lyf.lingyingfacompose.ui.myTextField.TextFieldScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,7 +59,15 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    TextFieldScreen()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        SideEffectScreen()
+        LaunchedEffectScreen()
+    }
 }
 
 
