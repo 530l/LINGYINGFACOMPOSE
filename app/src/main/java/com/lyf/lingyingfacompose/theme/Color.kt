@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose.ui.theme
+package com.lyf.lingyingfacompose.theme
 
 import androidx.compose.ui.graphics.Color
 

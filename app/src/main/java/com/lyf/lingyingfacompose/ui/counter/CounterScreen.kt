@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose
+package com.lyf.lingyingfacompose.ui.counter
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +11,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lyf.lingyingfacompose.viewmodel.CounterViewModel
 
 @Composable
 fun CounterScreen(counterViewModel: CounterViewModel = hiltViewModel()) {

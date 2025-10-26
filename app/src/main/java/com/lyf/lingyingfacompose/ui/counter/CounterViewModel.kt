@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose.viewmodel
+package com.lyf.lingyingfacompose.ui.counter
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
