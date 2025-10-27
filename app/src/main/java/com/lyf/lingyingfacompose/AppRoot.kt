@@ -1,6 +1,8 @@
 package com.lyf.lingyingfacompose
 
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -21,10 +23,10 @@ data object Login : NavKey
 @Serializable
 data object Main : NavKey
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavigation(startDestination: NavKey = Splash) {
     val backStack = rememberNavBackStack(startDestination)
-
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
