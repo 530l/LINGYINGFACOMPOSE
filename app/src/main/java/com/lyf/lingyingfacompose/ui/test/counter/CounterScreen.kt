@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose.ui.counter
+package com.lyf.lingyingfacompose.ui.test.counter
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

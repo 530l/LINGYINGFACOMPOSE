@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose.ui.effect
+package com.lyf.lingyingfacompose.ui.test.effect
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
