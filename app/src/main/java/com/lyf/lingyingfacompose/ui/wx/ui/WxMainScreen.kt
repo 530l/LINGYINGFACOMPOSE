@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
  * @desc:   描述
  */
 @Composable
-fun MainScreen() {
+fun WxMainScreen() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current

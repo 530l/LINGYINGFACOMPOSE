@@ -11,6 +11,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.lyf.lingyingfacompose.ui.login.LoginScreen
 import com.lyf.lingyingfacompose.ui.main.MainScreen
 import com.lyf.lingyingfacompose.ui.splash.SplashScreen
+import com.lyf.lingyingfacompose.ui.wx.ui.WxMainScreen
 import kotlinx.serialization.Serializable
 
 
@@ -23,15 +24,23 @@ data object Login : NavKey
 @Serializable
 data object Main : NavKey
 
+@Serializable
+data object WxMainScreen : NavKey
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun AppNavigation(startDestination: NavKey = Splash) {
+fun AppNavigation(startDestination: NavKey = WxMainScreen) {
     val backStack = rememberNavBackStack(startDestination)
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {
+
+                is WxMainScreen -> NavEntry(key) {
+                    WxMainScreen()
+                }
+
                 is Splash -> NavEntry(key) {
                     SplashScreen(onFinished = {
                         val isLogin = false
