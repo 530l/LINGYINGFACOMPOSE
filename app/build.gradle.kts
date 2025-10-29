@@ -71,6 +71,14 @@ dependencies {
     implementation(libs.androidx.material3.adaptive.navigation3)
     implementation(libs.kotlinx.serialization.core)
 
+
+    // Coil图片加载（替代Glide）
+    implementation(libs.coil.compose)
+    implementation(libs.com.google.android.exoplayer.exoplayer.core3)
+    implementation(libs.exoplayer.ui)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
