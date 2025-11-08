@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.LINGYINGFACOMPOSE" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.LINGYINGFACOMPOSE" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- 状态栏透明 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- 状态栏内容颜色：浅色（用于深色背景） -->
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- 导航栏透明 -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- 导航栏内容颜色：浅色（用于深色背景） -->
+        <item name="android:windowLightNavigationBar">false</item>
+        <!-- 全屏布局，允许内容延伸到系统栏 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- 布局延伸到状态栏 -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
 </resources>

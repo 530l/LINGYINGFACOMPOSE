@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setEdgeToEdgeConfig()
         setContent {
             LINGYINGFACOMPOSETheme {
-                AppNavigation(startDestination = WxMainScreen)
+                AppNavigation()
             }
         }
     }

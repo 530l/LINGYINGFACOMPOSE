@@ -3,14 +3,19 @@ package com.lyf.lingyingfacompose.ui.mastermode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lyf.lingyingfacompose.ui.utils.SetSystemBarColor
 
 /**
  * 大师模式主界面
@@ -23,10 +28,18 @@ fun MasterModeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // 设置系统栏颜色：深色背景，使用浅色图标
+    SetSystemBarColor(
+        statusBarColor = Color.Transparent,
+        navigationBarColor = Color.Transparent,
+        isDarkBackground = true
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MasterModeColors.Background)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         // Toolbar 区域
         ToolbarSection(
@@ -74,7 +87,7 @@ fun MasterModeScreen(
                         toneTag = uiState.toneTag,
                         styleTag = uiState.styleTag,
                         styleTagIcon = uiState.styleTagIcon,
-                        menuItems = emptyList(), // TODO: 从 ViewModel 获取菜单项
+                        menuItems = listOf("节奏", "旋律", "和声", "音色", "速度", "调性"), // 默认菜单项
                         onRemoveAudioReference = { viewModel.removeAudioReferenceTag() },
                         onRemoveToneTag = { viewModel.removeToneTag() },
                         onRemoveStyleTag = { viewModel.removeStyleTag() },

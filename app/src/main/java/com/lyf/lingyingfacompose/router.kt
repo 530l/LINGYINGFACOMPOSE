@@ -15,3 +15,6 @@ data object Main : NavKey
 
 @Serializable
 data object WxMainScreen : NavKey
+
+@Serializable
+data object MasterModeScreen: NavKey
