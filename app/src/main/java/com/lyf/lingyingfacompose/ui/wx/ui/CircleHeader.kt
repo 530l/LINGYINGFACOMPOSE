@@ -1,4 +1,4 @@
-package com.lyf.lingyingfacompose.ui.wx.ui
+ package com.lyf.lingyingfacompose.ui.wx.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

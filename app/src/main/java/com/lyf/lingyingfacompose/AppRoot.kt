@@ -14,19 +14,6 @@ import com.lyf.lingyingfacompose.ui.splash.SplashScreen
 import com.lyf.lingyingfacompose.ui.wx.ui.WxMainScreen
 import kotlinx.serialization.Serializable
 
-
-@Serializable
-data object Splash : NavKey
-
-@Serializable
-data object Login : NavKey
-
-@Serializable
-data object Main : NavKey
-
-@Serializable
-data object WxMainScreen : NavKey
-
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavigation(startDestination: NavKey = WxMainScreen) {
