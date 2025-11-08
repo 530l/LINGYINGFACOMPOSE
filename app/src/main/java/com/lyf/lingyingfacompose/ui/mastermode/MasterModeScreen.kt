@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lyf.lingyingfacompose.ui.mastermode.MasterModeResources.IconTone
 import com.lyf.lingyingfacompose.ui.utils.SetSystemBarColor
 
 /**
@@ -83,11 +84,11 @@ fun MasterModeScreen(
                 },
                 tagMenuContent = {
                     TagMenuSection(
-                        audioReferencePercent = uiState.audioReferencePercent,
-                        toneTag = uiState.toneTag,
-                        styleTag = uiState.styleTag,
-                        styleTagIcon = uiState.styleTagIcon,
-                        menuItems = listOf("节奏", "旋律", "和声", "音色", "速度", "调性"), // 默认菜单项
+                        audioReferencePercent = 85,
+                        toneTag = "男声",
+                        styleTag = "中文说唱",
+                        styleTagIcon = IconTone,
+                        menuItems = listOf("风格参考", "歌声参考", "音频参考"), // 默认菜单项
                         onRemoveAudioReference = { viewModel.removeAudioReferenceTag() },
                         onRemoveToneTag = { viewModel.removeToneTag() },
                         onRemoveStyleTag = { viewModel.removeStyleTag() },

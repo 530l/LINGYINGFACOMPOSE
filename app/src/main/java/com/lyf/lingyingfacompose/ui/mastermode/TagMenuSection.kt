@@ -1,7 +1,9 @@
 package com.lyf.lingyingfacompose.ui.mastermode
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,8 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -21,8 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lyf.lingyingfacompose.R
 
 /**
  * 标签菜单区域
@@ -48,15 +50,15 @@ fun TagMenuSection(
                 bottom = MasterModeDimensions.TagMenuBottomPadding
             )
     ) {
-        // 标签行
-        Row(
+
+
+        Row(  // 音频参考标签    // 音调标签
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = MasterModeDimensions.TagMarginStart,
                     end = MasterModeDimensions.TagMenuDeleteIconMarginEnd
-                ),
-            verticalAlignment = Alignment.CenterVertically
+                ), verticalAlignment = Alignment.CenterVertically
         ) {
             // 音频参考标签
             if (audioReferencePercent != null) {
@@ -66,7 +68,7 @@ fun TagMenuSection(
                     modifier = Modifier.padding(end = MasterModeDimensions.TagMarginEnd)
                 )
             }
-            
+
             // 音调标签
             if (toneTag != null) {
                 TagChip(
@@ -75,51 +77,45 @@ fun TagMenuSection(
                     modifier = Modifier.padding(end = MasterModeDimensions.TagMarginEnd)
                 )
             }
-            
-            // 风格标签
+        }
+
+        // 风格标签
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = 4.dp,
+                    start = MasterModeDimensions.TagMarginStart,
+                    end = MasterModeDimensions.TagMenuDeleteIconMarginEnd
+                ), verticalAlignment = Alignment.CenterVertically
+        ) {
             if (styleTag != null) {
                 StyleTagChip(
-                    text = styleTag,
-                    iconRes = styleTagIcon,
-                    onCloseClick = onRemoveStyleTag
+                    text = styleTag, iconRes = styleTagIcon, onCloseClick = onRemoveStyleTag
                 )
             }
-            
+
             Spacer(modifier = Modifier.weight(1f))
-            
+
             // 删除按钮
-            Icon(
+            Image(
                 painter = painterResource(id = MasterModeResources.IconDelBlack),
                 contentDescription = "删除",
                 modifier = Modifier
                     .clickable { onDeleteClick() }
-                    .padding(end = MasterModeDimensions.TagMenuDeleteIconMarginEnd)
-                    .padding(bottom = MasterModeDimensions.TagMenuDeleteIconMarginBottom),
-                tint = MasterModeColors.TextWhite
+                    .padding(end = MasterModeDimensions.TagMenuDeleteIconMarginEnd),
             )
         }
-        
-        // 分隔线
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(MasterModeDimensions.TagMenuLineHeight)
-                .padding(
-                    horizontal = MasterModeDimensions.InputFieldHorizontalPadding,
-                    vertical = MasterModeDimensions.TagMenuLineTopPadding
-                )
-                .background(MasterModeColors.DividerLine)
-        )
-        
-        // 菜单 RecyclerView 区域
+
+
+        // 菜单，风格，音色， 音频
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(MasterModeDimensions.TagMenuRecyclerViewHeight)
+                .padding(top = 12.dp, start = 12.dp, end = 12.dp)
         ) {
-            // TODO: 实现 RecyclerView 内容
-            // 这里可以使用 LazyRow 或自定义的滚动列表
-            MenuRecyclerViewContent(items = menuItems)
+            MenuRowContent(items = menuItems)
         }
     }
 }
@@ -129,9 +125,7 @@ fun TagMenuSection(
  */
 @Composable
 private fun TagChip(
-    text: String,
-    onCloseClick: () -> Unit,
-    modifier: Modifier = Modifier
+    text: String, onCloseClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
@@ -140,8 +134,7 @@ private fun TagChip(
             .padding(
                 horizontal = MasterModeDimensions.TagHorizontalPadding,
                 vertical = MasterModeDimensions.TagVerticalPadding
-            ),
-        verticalAlignment = Alignment.CenterVertically
+            ), verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text,
@@ -166,10 +159,7 @@ private fun TagChip(
  */
 @Composable
 private fun StyleTagChip(
-    text: String,
-    iconRes: Int?,
-    onCloseClick: () -> Unit,
-    modifier: Modifier = Modifier
+    text: String, iconRes: Int?, onCloseClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
@@ -178,8 +168,7 @@ private fun StyleTagChip(
             .padding(
                 horizontal = MasterModeDimensions.TagHorizontalPadding,
                 vertical = MasterModeDimensions.TagVerticalPadding
-            ),
-        verticalAlignment = Alignment.CenterVertically
+            ), verticalAlignment = Alignment.CenterVertically
     ) {
         if (iconRes != null) {
             Icon(
@@ -192,15 +181,13 @@ private fun StyleTagChip(
         } else {
             Spacer(modifier = Modifier.width(6.dp))
         }
-        
+
         Text(
-            text = text,
-            color = MasterModeColors.TextWhite,
-            fontSize = 12.sp,
-            maxLines = 1
+            text = text, color = MasterModeColors.TextWhite, fontSize = 12.sp, maxLines = 1
         )
-        
+
         Spacer(modifier = Modifier.width(MasterModeDimensions.TagCloseMarginStart))
+
         Icon(
             painter = painterResource(id = MasterModeResources.IconDisableClose),
             contentDescription = "关闭",
@@ -212,50 +199,28 @@ private fun StyleTagChip(
     }
 }
 
-/**
- * 菜单 RecyclerView 内容
- */
 @Composable
-private fun MenuRecyclerViewContent(
-    items: List<String>
-) {
-    if (items.isEmpty()) {
-        // 如果没有数据，显示空状态或者默认菜单项
-        LazyRow(
-            modifier = Modifier.fillMaxWidth()
+private fun MenuRowContent(items: List<String>) {
+    if (items.isNotEmpty()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp) // ← 设置 item 之间的间距
+            // horizontalArrangement = Arrangement.SpaceEvenly // 或 SpaceBetween, Center 等
         ) {
-            items(getDefaultMenuItems()) { item ->
+            items.forEach { item ->
                 MenuItemChip(
                     text = item,
-                    onClick = { /* TODO: 处理菜单项点击 */ }
-                )
-            }
-        }
-    } else {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(items) { item ->
-                MenuItemChip(
-                    text = item,
-                    onClick = { /* TODO: 处理菜单项点击 */ }
+                    onClick = { /* TODO */ },
+                    modifier = Modifier.weight(1f) // 平分宽度
                 )
             }
         }
     }
 }
 
-/**
- * 获取默认菜单项
- */
-private fun getDefaultMenuItems(): List<String> {
-    return listOf(
-        "节奏", "旋律", "和声", "音色", "速度", "调性"
-    )
-}
 
 /**
- * 菜单项芯片
+ * 菜单项item
  */
 @Composable
 private fun MenuItemChip(
@@ -265,17 +230,26 @@ private fun MenuItemChip(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
+            .clip(RoundedCornerShape(6.dp))//圆角
             .background(MasterModeColors.TagBackground)
             .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .padding(horizontal = 4.dp)
+            .padding(top = 4.dp, bottom = 4.dp)
+//            .padding(horizontal = 12.dp, vertical = 12.dp) // ← 这是内边距，OK
     ) {
-        Text(
-            text = text,
-            color = MasterModeColors.TextWhite,
-            fontSize = 12.sp
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = R.drawable.icon_music_style),
+                contentDescription = "添加",
+                modifier = Modifier.size(24.dp),
+            )
+            Text(
+                text = text,
+                color = MasterModeColors.TextWhite,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center, // 可选：居中对齐文字
+                modifier = Modifier.fillMaxWidth() // 让文字也撑满 chip 宽度
+            )
+        }
+
     }
 }
-
