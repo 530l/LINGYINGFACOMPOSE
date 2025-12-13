@@ -24,6 +24,7 @@ rxjava = "3.1.8"
 rxandroid = "3.0.2"
 coilCompose = "2.6.0"
 exoplayerUi = "2.19.1"
+material = "1.13.0"
 
 
 [libraries]
@@ -57,6 +58,7 @@ rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 com-google-android-exoplayer-exoplayer-core3 = { module = "com.google.android.exoplayer:exoplayer-core", version.ref = "exoplayerUi" }
 exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayerUi" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 

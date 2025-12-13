@@ -11,44 +11,48 @@ import com.lyf.lingyingfacompose.ui.login.LoginScreen
 import com.lyf.lingyingfacompose.ui.main.MainScreen
 import com.lyf.lingyingfacompose.ui.mastermode.MasterModeScreen
 import com.lyf.lingyingfacompose.ui.splash.SplashScreen
+import com.lyf.lingyingfacompose.ui.wx.home.WxHomeScreen
 import com.lyf.lingyingfacompose.ui.wx.ui.WxMainScreen
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun AppNavigation(startDestination: NavKey = MasterModeScreen) {
+fun AppNavigation(startDestination: NavKey = WxHomeScreenRouter) {
     val backStack = rememberNavBackStack(startDestination)
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {
+                is WxHomeScreenRouter -> NavEntry(key) {
+                    WxHomeScreen()
+                }
 
-                is MasterModeScreen -> NavEntry(key) {
+                is MasterModeScreenRouter -> NavEntry(key) {
                     MasterModeScreen()
                 }
 
-                is WxMainScreen -> NavEntry(key) {
+                is WxMainScreenRouter -> NavEntry(key) {
                     WxMainScreen()
                 }
 
-                is Splash -> NavEntry(key) {
+                is SplashRouter -> NavEntry(key) {
                     SplashScreen(onFinished = {
                         val isLogin = false
-                        if (isLogin) backStack.add(Main)
-                        else backStack.add(Login)
+                        if (isLogin) backStack.add(MainRouter)
+                        else backStack.add(LoginRouter)
                     })
                 }
 
-                is Login -> NavEntry(key) {
+                is LoginRouter -> NavEntry(key) {
                     LoginScreen(onLoginSuccess = {
-                        backStack.add(Main)
+                        backStack.add(MainRouter)
                     })
                 }
 
-                is Main -> NavEntry(key) {
+                is MainRouter -> NavEntry(key) {
                     MainScreen(onLogout = {
                         backStack.removeLastOrNull()
-                        backStack.add(Login)
+                        backStack.add(LoginRouter)
                     })
                 }
 

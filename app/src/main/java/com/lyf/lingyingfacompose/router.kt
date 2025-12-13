@@ -5,16 +5,19 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object Splash : NavKey
+data object SplashRouter : NavKey
 
 @Serializable
-data object Login : NavKey
+data object LoginRouter : NavKey
 
 @Serializable
-data object Main : NavKey
+data object MainRouter : NavKey
 
 @Serializable
-data object WxMainScreen : NavKey
+data object WxMainScreenRouter : NavKey
 
 @Serializable
-data object MasterModeScreen: NavKey
+data object MasterModeScreenRouter: NavKey
+
+@Serializable
+data object WxHomeScreenRouter: NavKey
