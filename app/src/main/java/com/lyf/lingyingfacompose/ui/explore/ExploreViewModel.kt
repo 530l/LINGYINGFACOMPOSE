@@ -2,6 +2,7 @@ package com.lyf.lingyingfacompose.ui.explore
 
 import androidx.lifecycle.ViewModel
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
+import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,8 +38,27 @@ class ExploreViewModel : ViewModel() {
                 detailImageUrl = "https://wanx.alicdn.com/wanx/1086121689920057/text_to_image_lite_v2/724a4bca69094d089cf1566798f4517d_0_visibleWatermark.png",
             ),
         )
+
+        val menuItems = listOf(
+            ExploreMenuItem(1, "大师写歌", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(2, "热歌改编", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(3, "AI MV", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(
+                4,
+                "AI翻唱",
+                "https://cdn1.muse.top/static/icon/function_cover.png",
+                isComingSoon = true
+            ),
+            ExploreMenuItem(5, "速配MV", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(6, "速配MV6", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(7, "速配MV7", "https://cdn1.muse.top/static/icon/function_cover.png"),
+            ExploreMenuItem(8, "速配MV8", "https://cdn1.muse.top/static/icon/function_cover.png")
+
+        )
+
         _uiState.value = _uiState.value.copy(
             bannerItems = items,
+            menuItems = menuItems,
             currentIndex = 0,
         )
     }
