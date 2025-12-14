@@ -80,6 +80,8 @@ dependencies {
     implementation(libs.rxjava)
     implementation(libs.rxandroid)
 
+    implementation("io.github.ltttttttttttt:ComposeViews:1.9.0.4")
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

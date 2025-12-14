@@ -1,109 +1,131 @@
 package com.lyf.lingyingfacompose.ui
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyf.lingyingfacompose.R
+import com.lyf.lingyingfacompose.data.HomeTab
+import com.lyf.lingyingfacompose.ui.asset.AssetScreen
+import com.lyf.lingyingfacompose.ui.create.CreateScreen
+import com.lyf.lingyingfacompose.ui.explore.ExplorerScreen
+import com.lyf.lingyingfacompose.ui.mine.MineScreen
+import kotlinx.coroutines.launch
 
 
 @Preview
 @Composable
-fun HomeScreen() {
-    var selectedTab by remember { mutableStateOf(0) }
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+
+    val tabs by viewModel.homeTabs.collectAsState()
+
+    if (tabs.isEmpty()) {
+        // 如果 tabs 还没加载（理论上不会，因为有默认值），可加 loading
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var selectedTab by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(pagerState.currentPage) {
+        // PageView 滑动更新 selectedTab 重组更新 TabItem
+        selectedTab = pagerState.currentPage
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color(0xFF14161B)),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-            /*.background(Color.White)*/
-        ) {
-            Text(
-                "selectedTab $selectedTab",
-                fontSize = 20.sp,
-                modifier = Modifier.align(Alignment.Center)
+        // 页面内容区域
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = false,
+            modifier = Modifier.weight(1f)
+        ) { page ->
+            when (tabs[page].id) {
+                "1" -> ExplorerScreen()
+                "2" -> CreateScreen()
+                "3" -> AssetScreen()
+                "4" -> MineScreen()
+            }
+        }
+
+        // 底部导航栏
+        NavigationBar(
+            tabs = tabs,
+            selected = selectedTab,
+            onSelected = { index ->
+                selectedTab = index
+                coroutineScope.launch { pagerState.animateScrollToPage(index) }
+            }
+        )
+    }
+}
+
+
+@Composable
+fun NavigationBar(
+    tabs: List<HomeTab>,
+    selected: Int,
+    onSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier.background(Color(0xFF131313))) {
+        tabs.forEachIndexed { index, tab ->
+            val isSelected = selected == index
+            TabItem(
+                iconId = getIconRes(tab.id, isSelected),
+                title = tab.title,
+                tint = if (isSelected) Color.White else Color(0x66FFFFFF),
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { onSelected(index) }
             )
         }
-        WxNavigationBar(selected = selectedTab, onSelected = {
-            selectedTab = it
-        })
     }
 }
 
 @Composable
-private fun WxNavigationBar(selected: Int, onSelected: (Int) -> Unit) {
-    Row {
-        TabItem(
-            iconId = if (selected == 0)
-                R.drawable.icon_explore_selected else R.drawable.icon_explore,
-            title = "探索",
-            tint = if (selected == 0) Color.Black else Color.Gray,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onSelected(0) }
-        )
-        TabItem(
-            iconId = if (selected == 1)
-                R.drawable.icon_create2 else R.drawable.icon_create2,
-            title = "创作",
-            tint = if (selected == 1) Color.Black else Color.Gray,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onSelected(1) }
-        )
-        TabItem(
-            iconId = if (selected == 2)
-                R.drawable.icon_tab_asset_selected else R.drawable.icon_tab_asset,
-            title = "资产",
-            tint = if (selected == 2) Color.Black else Color.Gray,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onSelected(2) }
-        )
-        TabItem(
-            iconId = if (selected == 3)
-                R.drawable.icon_mine_selected else R.drawable.icon_mine,
-            title = "我的",
-            tint = if (selected == 3) Color.Black else Color.Gray,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onSelected(3) }
-        )
+private fun getIconRes(tabId: String, isSelected: Boolean): Int {
+    return when (tabId) {
+        "1" -> if (isSelected) R.drawable.icon_explore_selected else R.drawable.icon_explore
+        "2" -> if (isSelected) R.drawable.icon_create2 else R.drawable.icon_create2
+        "3" -> if (isSelected) R.drawable.icon_tab_asset_selected else R.drawable.icon_tab_asset
+        "4" -> if (isSelected) R.drawable.icon_mine_selected else R.drawable.icon_mine
+        else -> R.drawable.icon_create2
     }
 }
 
@@ -120,62 +142,8 @@ private fun TabItem(
             bottom = 10.dp
         ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(painterResource(iconId), title, Modifier.size(24.dp))
+        Icon(painterResource(iconId), title, Modifier.size(24.dp), tint = Color.Unspecified)
         Text(title, fontSize = 12.sp, color = tint)
-    }
-}
-
-
-@Composable
-fun MusicRankingItem(
-    title: String = "周榜音乐",
-    songs: List<String> = listOf(
-        "1 文字最多显示到这里... @文字最多...",
-        "2 伤心的人别停慢歌 @五月天",
-        "3 Say you Love Me @Patti Ausetin"
-    ),
-    imageResource: Int,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .then(Modifier.height(120.dp)),
-        shape = RoundedCornerShape(12.dp),
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                songs.forEach { song ->
-                    Text(
-                        text = song,
-                        style = MaterialTheme.typography.bodySmall.copy(color = Color.LightGray),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            Image(
-                modifier = Modifier.size(90.dp),
-                imageVector = ImageVector.vectorResource(imageResource),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                alpha = 0.9f
-            )
-        }
     }
 }
 
