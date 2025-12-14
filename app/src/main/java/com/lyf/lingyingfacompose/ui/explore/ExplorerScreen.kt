@@ -207,10 +207,8 @@ fun HorizontalMenuItem(
                     Text(
                         text = "即将开放",
                         modifier = Modifier
-                            // 将文本对齐到Box的右上角
-                            .align(Alignment.TopEnd)
-                            // 微调位置：向左移一点，向上一点
-                            .offset(x = (20).dp, y = (6).dp)
+                            .align(Alignment.TopEnd)  // 将文本对齐到Box的右上角
+                            .offset(x = (20).dp, y = (6).dp)  // 微调位置：向左移一点，向上一点
                             .background(
                                 Color(0x20FFFFFF),
                                 RoundedCornerShape(
