@@ -1,5 +1,6 @@
-package com.lyf.lingyingfacompose
+package com.lyf.lingyingfacompose.utils
 
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import androidx.activity.ComponentActivity
@@ -16,8 +17,8 @@ fun ComponentActivity.setEdgeToEdgeConfig() {
     enableEdgeToEdge()
     
     // 设置状态栏和导航栏为透明
-    window.statusBarColor = android.graphics.Color.TRANSPARENT
-    window.navigationBarColor = android.graphics.Color.TRANSPARENT
+    window.statusBarColor = Color.TRANSPARENT
+    window.navigationBarColor = Color.TRANSPARENT
     
     // 使用 WindowCompat 获取 WindowInsetsController
     val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
