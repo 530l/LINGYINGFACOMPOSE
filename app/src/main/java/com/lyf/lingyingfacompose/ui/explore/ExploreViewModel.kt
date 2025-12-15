@@ -3,6 +3,7 @@ package com.lyf.lingyingfacompose.ui.explore
 import androidx.lifecycle.ViewModel
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
+import com.lyf.lingyingfacompose.data.ExploreTabItem
 import com.lyf.lingyingfacompose.data.ExploreUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,9 +57,18 @@ class ExploreViewModel : ViewModel() {
 
         )
 
+
+        val tabItems = listOf(
+            ExploreTabItem(1, "推荐"),
+            ExploreTabItem(2, "活动"),
+            ExploreTabItem(3, "榜单"),
+            ExploreTabItem(4, "专栏"),
+        )
+
         _uiState.value = _uiState.value.copy(
             bannerItems = items,
             menuItems = menuItems,
+            tabItems = tabItems,
             currentIndex = 0,
         )
     }
