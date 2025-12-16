@@ -57,7 +57,10 @@ fun ExploreRecommendScreen(viewModel: ExploreViewModel = hiltViewModel()) {
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         contentPadding = PaddingValues(horizontal = 1.dp)
     ) {
-        items(recommendItems.size) { index ->
+        items(
+            count = recommendItems.size,
+            key = { index -> recommendItems[index].id } // 👈 关键：通过 index 获取 item.id 作为 key
+        ) { index ->
             ExploreRecommendItem(
                 item = recommendItems[index],
                 onItemClick = { /* 跳转 */ },
@@ -171,6 +174,10 @@ fun ExploreRecommendItem(
                     }
 
                     // 排名标签（左下角）
+                    //在 Jetpack Compose 中，Modifier.offset() 是用来调整组件相对于其原始位置的偏移量。
+                    // 这个函数允许你通过指定 x 和 y 的值来移动元素，其中：
+                    //x：表示水平方向上的偏移量。正值会使元素向右移动，而负值则向左移动。
+                    //y：表示垂直方向上的偏移量。正值会使元素向下移动，而负值则向上移动。
                     if (item.isShowRanking) {
                         Box(
                             modifier = Modifier
@@ -178,13 +185,6 @@ fun ExploreRecommendItem(
                                 .offset(x = 12.dp, y = (-8).dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(R.drawable.icon_ranking_title_left_drawable),
-                                    contentDescription = null,
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
                                 Box(
                                     modifier = Modifier
                                         .background(
@@ -204,7 +204,7 @@ fun ExploreRecommendItem(
                                         )
                                         .alpha(0.8f)
                                         .padding(vertical = 3.dp, horizontal = 6.dp)
-                                        .padding(start = 10.dp) // 补偿左侧图标
+                                        .padding(start = 6.dp) // 补偿左侧图标
                                 ) {
                                     Text(
                                         text = "第${item.ranking}名",
@@ -217,6 +217,14 @@ fun ExploreRecommendItem(
                                     )
                                 }
                             }
+                            Icon(
+                                painter = painterResource(R.drawable.icon_ranking_title_left_drawable),
+                                contentDescription = null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .offset(x = (-12).dp, y = (-2).dp)//offset 是内容的偏移量？
+                            )
                         }
                     }
                 }

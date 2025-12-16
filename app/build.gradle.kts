@@ -23,13 +23,13 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = rootProject.file("keystore/test.jks") // 👈 更安全
+            storeFile = rootProject.file("app/keystore/test.jks")
             storePassword = "123456"
             keyAlias = "test"
             keyPassword = "123456"
         }
         create("release") {
-            storeFile = rootProject.file("keystore/test.jks")
+            storeFile = rootProject.file("app/keystore/test.jks")
             storePassword = "123456"
             keyAlias = "test"
             keyPassword = "123456"

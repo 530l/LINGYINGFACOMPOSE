@@ -73,6 +73,7 @@ class ExploreViewModel : ViewModel() {
 
         val tempRecommendItems = listOf(
             V3ExploreRecommendBean(
+                id = 1.toString(),
                 imageUrl = "https://picsum.photos/300/400?random=1",
                 isMv = true,
                 isPortraitMv = true,
@@ -86,6 +87,7 @@ class ExploreViewModel : ViewModel() {
                 isDeleted = false
             ),
             V3ExploreRecommendBean(
+                id = 2.toString(),
                 imageUrl = "https://picsum.photos/500/300?random=2",
                 isMv = true,
                 isLandscapeMv = true,
@@ -100,6 +102,7 @@ class ExploreViewModel : ViewModel() {
                 isDeleted = false
             ),
             V3ExploreRecommendBean(
+                id = 3.toString(),
                 imageUrl = "https://picsum.photos/300/350?random=3",
                 isSong = true,
                 title = "《雨落长安》- 古风纯音乐",
@@ -110,6 +113,7 @@ class ExploreViewModel : ViewModel() {
                 isDeleted = false
             ),
             V3ExploreRecommendBean(
+                id = 4.toString(),
                 imageUrl = "https://picsum.photos/300/500?random=4",
                 isMv = true,
                 isPortraitMv = true,
@@ -121,6 +125,7 @@ class ExploreViewModel : ViewModel() {
                 isDeleted = true // 👈 模拟已删除作品
             ),
             V3ExploreRecommendBean(
+                id = 5.toString(),
                 imageUrl = "https://picsum.photos/400/250?random=5",
                 isMv = true,
                 isLandscapeMv = true,
@@ -133,6 +138,7 @@ class ExploreViewModel : ViewModel() {
                 isDeleted = false
             ),
             V3ExploreRecommendBean(
+                id = 6.toString(),
                 imageUrl = "https://picsum.photos/300/320?random=6",
                 isSong = true,
                 isShowRanking = true,
@@ -150,7 +156,7 @@ class ExploreViewModel : ViewModel() {
 
         val recommendItems = generateRecommendItems(
             startIndex = 0,
-            count = 14,
+            count = 30,
             existingList = tempRecommendItems.toMutableList()
         )
 
@@ -208,6 +214,7 @@ class ExploreViewModel : ViewModel() {
 
             existingList.add(
                 V3ExploreRecommendBean(
+                    id = "@@$index",
                     imageUrl = when {
                         isPortrait -> portraitUrl
                         isLandscape -> landscapeUrl

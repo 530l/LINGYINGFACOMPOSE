@@ -35,6 +35,7 @@ data class ExploreTabItem(
 
 
 data class V3ExploreRecommendBean(
+    val id: String,
     val imageUrl: String? = null,
     val isMv: Boolean = false,
     val isPortraitMv: Boolean = false,
