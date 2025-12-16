@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -44,7 +45,8 @@ import com.lt.compose_views.banner.rememberBannerState
 import com.lt.compose_views.compose_pager.rememberScalePagerContentTransformation
 import com.lt.compose_views.pager_indicator.PagerIndicator
 import com.lyf.lingyingfacompose.R
-import com.lyf.lingyingfacompose.components.TabBar
+import com.lyf.lingyingfacompose.components.CustomTabRow
+import com.lyf.lingyingfacompose.components.cancelRipperClick
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreTabItem
@@ -78,7 +80,6 @@ fun ExplorerScreen(viewModel: ExploreViewModel = hiltViewModel()) {
             // 3. Tab 栏 + 内容分页
             TabLayoutItem(
                 tabItems = uiState.tabItems,
-                currentIndex = 0,
                 onTabIndexChange = {}
             )
         }
@@ -224,35 +225,57 @@ fun HorizontalMenuItem(
 @Composable
 fun TabLayoutItem(
     tabItems: List<ExploreTabItem>,
-    currentIndex: Int,
     onTabIndexChange: (Int) -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { tabItems.size })
     val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        TabBar(
-            data = tabItems,
-            dataMapping = { it.title },
-            pagerState = pagerState,
-            backgroundColor = Color.Black,
-            selectedContentColor = Color.White,
-            unselectedContentColor = Color(0x90FFFFFF),
-            indicatorColor = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .offset(x = (-8).dp)
-                .wrapContentHeight(),
-            onClick = {
-                scope.launch { //点击tab时，切换到对应的页面
-                    pagerState.animateScrollToPage(it)
-                    onTabIndexChange.invoke(it)
+
+        CustomTabRow(
+            modifier = Modifier.align(Alignment.Start),
+            selectedIndex = pagerState.currentPage,
+            indicator = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp, 2.dp)
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(Color.White)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-            },
-        )
+            }
+        ) {
+            tabItems.forEachIndexed { index, s ->
+                Box(
+                    modifier = Modifier
+                        .height(48.dp)
+                        .wrapContentWidth()
+                        .padding(horizontal = 12.dp)
+                        .cancelRipperClick {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = s.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (index == pagerState.currentPage) Color.White else Color(
+                            0x90FFFFFF
+                        ),
+                    )
+                }
+
+            }
+        }
+
 
         HorizontalPager(
             state = pagerState,
@@ -265,4 +288,3 @@ fun TabLayoutItem(
         }
     }
 }
-
