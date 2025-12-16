@@ -21,6 +21,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("keystore/test.jks") // 👈 更安全
+            storePassword = "123456"
+            keyAlias = "test"
+            keyPassword = "123456"
+        }
+        create("release") {
+            storeFile = rootProject.file("keystore/test.jks")
+            storePassword = "123456"
+            keyAlias = "test"
+            keyPassword = "123456"
+        }
+    }
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -28,6 +44,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+        }
+
+        debug {
+            // 可选：显式指定，但通常不需要，因为默认就是 debug 签名
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 

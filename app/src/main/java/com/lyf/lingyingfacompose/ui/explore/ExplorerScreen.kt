@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -50,6 +51,10 @@ import com.lyf.lingyingfacompose.components.cancelRipperClick
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreTabItem
+import com.lyf.lingyingfacompose.ui.explore.tab.ExploreActivityScreen
+import com.lyf.lingyingfacompose.ui.explore.tab.ExploreRankingScreen
+import com.lyf.lingyingfacompose.ui.explore.tab.ExploreRecommendScreen
+import com.lyf.lingyingfacompose.ui.explore.tab.ExploreSpecialColumnScreen
 import kotlinx.coroutines.launch
 
 
@@ -78,10 +83,7 @@ fun ExplorerScreen(viewModel: ExploreViewModel = hiltViewModel()) {
             // 2. 导航菜单栏
             HorizontalMenuItem(uiState.menuItems, onMenuIndexChange = {})
             // 3. Tab 栏 + 内容分页
-            TabLayoutItem(
-                tabItems = uiState.tabItems,
-                onTabIndexChange = {}
-            )
+            TabLayoutItem(tabItems = uiState.tabItems)
         }
     }
 }
@@ -108,8 +110,7 @@ private fun BannerItem(
             contentTransformation = rememberScalePagerContentTransformation(1f, 0.9f),
             orientation = Orientation.Horizontal,
             bannerKey = { index -> list[index].id },
-
-            ) {
+        ) {
             AsyncImage(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -225,7 +226,6 @@ fun HorizontalMenuItem(
 @Composable
 fun TabLayoutItem(
     tabItems: List<ExploreTabItem>,
-    onTabIndexChange: (Int) -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { tabItems.size })
     val scope = rememberCoroutineScope()
@@ -276,14 +276,19 @@ fun TabLayoutItem(
             }
         }
 
-
         HorizontalPager(
             state = pagerState,
             verticalAlignment = Alignment.Top,
-            modifier = Modifier.weight(1f) // 👈 占满剩余空间
+            modifier = Modifier.weight(1f)
         ) { page ->
-            Box(modifier = Modifier.fillMaxSize()) {
-
+            // 使用 tabItems[page].id 作为 key（假设 ExploreTabItem 有唯一 id）
+            key(tabItems.getOrNull(page)?.id ?: page) {
+                when (page) {
+                    0 -> ExploreRecommendScreen()
+                    1 -> ExploreActivityScreen()
+                    2 -> ExploreRankingScreen()
+                    3 -> ExploreSpecialColumnScreen()
+                }
             }
         }
     }
