@@ -15,13 +15,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,12 +55,8 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedTab by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(pagerState.currentPage) {
-        // PageView 滑动更新 selectedTab 重组更新 TabItem
-        selectedTab = pagerState.currentPage
-    }
+    // 不额外维护 selectedTab 状态：避免 LaunchedEffect + 状态写入带来的额外重组和 snapshot 写放大
+    val selectedTab by remember { derivedStateOf { pagerState.currentPage } }
 
     Column(
         modifier = Modifier
@@ -73,6 +67,8 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
+            // 明确不预加载额外 page（减少首屏合成/measure 压力）
+            beyondViewportPageCount = 0,
             modifier = Modifier.weight(1f)
         ) { page ->
             when (tabs[page].id) {
@@ -88,7 +84,6 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             tabs = tabs,
             selected = selectedTab,
             onSelected = { index ->
-                selectedTab = index
                 coroutineScope.launch { pagerState.animateScrollToPage(index) }
             }
         )

@@ -2,11 +2,15 @@ package com.lyf.lingyingfacompose.ui.explore
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreTabItem
 import com.lyf.lingyingfacompose.data.ExploreUiState
 import com.lyf.lingyingfacompose.data.V3ExploreRecommendBean
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +22,22 @@ class ExploreViewModel : ViewModel() {
     val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
 
     init {
-        val items = listOf(
+        // 启动阶段“卡一下”通常来自主线程做了大量对象创建/随机数/列表构建。
+        // 策略：banner/menu/tab 这类轻量数据同步给 UI（避免 tabItems 短暂为空导致的越界崩溃），
+        // 推荐列表这种“重活”放到后台线程生成。
+        _uiState.value = buildBaseState(isLoading = true)
+        viewModelScope.launch {
+            val recommendItems = withContext(Dispatchers.Default) { buildRecommendItems() }
+            _uiState.value = _uiState.value.copy(
+                recommendItems = recommendItems,
+                isLoading = false,
+                error = null
+            )
+        }
+    }
+
+    private fun buildBaseState(isLoading: Boolean): ExploreUiState {
+        val bannerItems = listOf(
             ExploreBannerItem(
                 id = "1",
                 title = "今日推荐 · 氛围音乐",
@@ -59,9 +78,7 @@ class ExploreViewModel : ViewModel() {
             ExploreMenuItem(6, "速配MV6", "https://cdn1.muse.top/static/icon/function_cover.png"),
             ExploreMenuItem(7, "速配MV7", "https://cdn1.muse.top/static/icon/function_cover.png"),
             ExploreMenuItem(8, "速配MV8", "https://cdn1.muse.top/static/icon/function_cover.png")
-
         )
-
 
         val tabItems = listOf(
             ExploreTabItem(1, "推荐"),
@@ -70,8 +87,19 @@ class ExploreViewModel : ViewModel() {
             ExploreTabItem(4, "专栏"),
         )
 
+        return ExploreUiState(
+            bannerItems = bannerItems,
+            menuItems = menuItems,
+            tabItems = tabItems,
+            recommendItems = emptyList(),
+            currentIndex = 0,
+            isLoading = isLoading,
+            error = null
+        )
+    }
 
-        val tempRecommendItems = listOf(
+    private fun buildRecommendItems(): List<V3ExploreRecommendBean> {
+        val seedRecommendItems = listOf(
             V3ExploreRecommendBean(
                 id = 1.toString(),
                 imageUrl = "https://picsum.photos/300/400?random=1",
@@ -153,28 +181,21 @@ class ExploreViewModel : ViewModel() {
             )
         )
 
-
         val recommendItems = generateRecommendItems(
             startIndex = 0,
-            count = 30,
-            existingList = tempRecommendItems.toMutableList()
+            count = 130,
+            seedList = seedRecommendItems
         )
 
-        _uiState.value = _uiState.value.copy(
-            bannerItems = items,
-            menuItems = menuItems,
-            tabItems = tabItems,
-            recommendItems = recommendItems,
-            currentIndex = 0,
-        )
+        return recommendItems
     }
 
 
     fun generateRecommendItems(
         startIndex: Int,
         count: Int,
-        existingList: MutableList<V3ExploreRecommendBean> = mutableListOf()
-    ): MutableList<V3ExploreRecommendBean> {
+        seedList: List<V3ExploreRecommendBean> = emptyList()
+    ): List<V3ExploreRecommendBean> {
         val titles = listOf(
             "《银河漂流》", "《午夜咖啡馆》", "《山海之间》", "《数字梦境》", "《旧磁带》",
             "《霓虹雨》", "《风起云涌》", "《静默回声》", "《像素心跳》", "《月光代码》"
@@ -185,6 +206,8 @@ class ExploreViewModel : ViewModel() {
         )
         val activities = listOf("AI 创作赛", "夏日热单", "新声计划", "古风季", null, null, null)
 
+        // 不把 MutableList 暴露给 UI（避免被外部误改造成“同引用变更”，影响 Compose 的跳帧/对比）
+        val list = ArrayList<V3ExploreRecommendBean>(seedList.size + count).apply { addAll(seedList) }
         var index = startIndex
         repeat(count) {
             val isPortrait = (index % 3 == 0)
@@ -212,7 +235,7 @@ class ExploreViewModel : ViewModel() {
             val landscapeUrl = "https://cdn1.muse.top/image_6d6cbf1e-5556-4f14-8aaa-9c3aa639b4eb.jpeg"
             val songUrl = "https://cdn1.muse.top/147681da-cfcd-4dde-b401-e8470a5fa8fe.jpeg"
 
-            existingList.add(
+            list.add(
                 V3ExploreRecommendBean(
                     id = "@@$index",
                     imageUrl = when {
@@ -238,7 +261,7 @@ class ExploreViewModel : ViewModel() {
             )
             index++
         }
-        return existingList
+        return list
     }
 
 

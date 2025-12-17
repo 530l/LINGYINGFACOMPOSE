@@ -60,7 +60,14 @@ fun CustomTabRow(
             val tabPositions = mutableListOf<TabPosition>()
             var left = 0
             tabMeasurables.fastForEach {
-                val placeable = it.measure(constraints.copy(minWidth = 0, maxWidth = Constraints.Infinity, minHeight = tabHeight, maxHeight = tabHeight))
+                val placeable = it.measure(
+                    constraints.copy(
+                        minWidth = 0,
+                        maxWidth = Constraints.Infinity,
+                        minHeight = tabHeight,
+                        maxHeight = tabHeight
+                    )
+                )
                 tabPlaceables.add(placeable)
                 tabPositions.add(
                     TabPosition(left.toDp(), placeable.width.toDp(), placeable.width.toDp())
@@ -70,12 +77,23 @@ fun CustomTabRow(
 
             val layoutWidth = tabPlaceables.sumOf { it.width }
 
+            // 注意：tab 可能在异步加载阶段短暂为空（例如 pageCount=0），此时不能直接 tabPositions[selectedIndex]
+            // 否则会触发 IndexOutOfBoundsException（崩溃栈指向的就是这里）。
+            val selectedTabPosition = tabPositions.getOrNull(selectedIndex)
             val indicatorPlaceable =
-                subcompose("indicator") {
-                    Box(modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex]), contentAlignment = Alignment.Center) {
-                        indicator()
-                    }
-                }.firstOrNull()?.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+                if (selectedTabPosition != null) {
+                    subcompose("indicator") {
+                        Box(
+                            modifier = Modifier.tabIndicatorOffset(selectedTabPosition),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            indicator()
+                        }
+                    }.firstOrNull()
+                        ?.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+                } else {
+                    null
+                }
             val layoutHeight = max(tabHeight, indicatorPlaceable?.height ?: 0)
             layout(layoutWidth, layoutHeight) {
                 indicatorPlaceable?.placeRelative(0, layoutHeight - indicatorPlaceable.height)

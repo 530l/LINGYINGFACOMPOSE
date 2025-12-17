@@ -1,7 +1,9 @@
 package com.lyf.lingyingfacompose.data
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 
+@Stable
 data class ExploreUiState(
     val bannerItems: List<ExploreBannerItem> = emptyList(),
     val menuItems: List<ExploreMenuItem> = emptyList(),
@@ -12,7 +14,7 @@ data class ExploreUiState(
     val error: String? = null,
 )
 
-
+@Stable
 data class ExploreBannerItem(
     val id: String,
     val title: String,
@@ -20,20 +22,20 @@ data class ExploreBannerItem(
     val bannerImageUrl: String,
 )
 
-
+@Stable
 data class ExploreMenuItem(
     val id: Int,
     val title: String,
     val imageUrl: String,
     val isComingSoon: Boolean = false
 )
-
+@Stable
 data class ExploreTabItem(
     val id: Int,
     val title: String,
 )
 
-
+@Stable
 data class V3ExploreRecommendBean(
     val id: String,
     val imageUrl: String? = null,

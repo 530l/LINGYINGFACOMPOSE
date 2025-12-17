@@ -51,6 +51,7 @@ import com.lyf.lingyingfacompose.components.cancelRipperClick
 import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreTabItem
+import com.lyf.lingyingfacompose.data.V3ExploreRecommendBean
 import com.lyf.lingyingfacompose.ui.explore.tab.ExploreActivityScreen
 import com.lyf.lingyingfacompose.ui.explore.tab.ExploreRankingScreen
 import com.lyf.lingyingfacompose.ui.explore.tab.ExploreRecommendScreen
@@ -83,7 +84,10 @@ fun ExplorerScreen(viewModel: ExploreViewModel = hiltViewModel()) {
             // 2. 导航菜单栏
             HorizontalMenuItem(uiState.menuItems, onMenuIndexChange = {})
             // 3. Tab 栏 + 内容分页
-            TabLayoutItem(tabItems = uiState.tabItems)
+            TabLayoutItem(
+                tabItems = uiState.tabItems,
+                recommendItems = uiState.recommendItems
+            )
         }
     }
 }
@@ -226,7 +230,10 @@ fun HorizontalMenuItem(
 @Composable
 fun TabLayoutItem(
     tabItems: List<ExploreTabItem>,
+    recommendItems: List<V3ExploreRecommendBean>,
 ) {
+    // 异步加载阶段 tabItems 可能短暂为空；此时不渲染 TabRow/Pager，避免组件内部取 index 触发越界
+    if (tabItems.isEmpty()) return
     val pagerState = rememberPagerState(pageCount = { tabItems.size })
     val scope = rememberCoroutineScope()
 
@@ -279,6 +286,8 @@ fun TabLayoutItem(
         HorizontalPager(
             state = pagerState,
             verticalAlignment = Alignment.Top,
+            // 减少预渲染页数（Tab 内容复杂时能明显降低首屏合成量）
+            beyondViewportPageCount = 0,
             modifier = Modifier.weight(1f)
         ) { page ->
             // 使用 tabItems[page].id 作为 key（假设 ExploreTabItem 有唯一 id）
