@@ -12,3 +12,6 @@ data object LoginRouter : NavKey
 
 @Serializable
 data object HomeScreenRouter: NavKey
+
+@Serializable
+data object DesignScreenRouter: NavKey

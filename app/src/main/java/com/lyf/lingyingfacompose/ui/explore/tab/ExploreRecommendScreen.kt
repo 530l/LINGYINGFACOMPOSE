@@ -51,12 +51,17 @@ import com.lyf.lingyingfacompose.utils.LikeCountFormatter
 fun ExploreRecommendScreen(viewModel: ExploreViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val recommendItems = uiState.recommendItems
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        verticalItemSpacing = 2.dp,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        contentPadding = PaddingValues(horizontal = 1.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF14161B))
     ) {
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Fixed(2),
+            verticalItemSpacing = 2.dp,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            contentPadding = PaddingValues(horizontal = 1.dp)
+        ) {
         items(
             count = recommendItems.size,
             key = { index -> recommendItems[index].id } // 👈 关键：通过 index 获取 item.id 作为 key
@@ -66,6 +71,7 @@ fun ExploreRecommendScreen(viewModel: ExploreViewModel = hiltViewModel()) {
                 onItemClick = { /* 跳转 */ },
                 onFavoriteClick = { /* 切换点赞 */ }
             )
+        }
         }
     }
 }

@@ -106,6 +106,29 @@ fun ExploreRecommendItem(
                         error = painterResource(R.drawable.icon_logo)
                     )
 
+                    // 音乐类型标签（左上角）
+                    if (item.isSong || item.isMv) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .offset(x = 8.dp, y = 8.dp)
+                                .size(18.dp)
+                                .background(
+                                    Color.Black.copy(alpha = 0.6f),
+                                    TagShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // 这里需要音乐图标，暂时使用播放图标作为占位
+                            Icon(
+                                painter = painterResource(R.drawable.icon_explore_v4_play),
+                                contentDescription = "Music Type",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                    }
+
                     // MV 播放按钮
                     if (item.isMv) {
                         Box(
@@ -215,12 +238,11 @@ fun ExploreRecommendItem(
                     text = title,
                     color = Color.White.copy(alpha = 0.9f),
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp, start = 8.dp, end = 24.dp)
+                        .padding(top = 8.dp, start = 8.dp, end = 8.dp)
                 )
             }
 
@@ -258,8 +280,7 @@ fun ExploreRecommendItem(
                         fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.widthIn(max = 80.dp)
-                    )
+                      )
                 }
 
                 // 点赞
@@ -273,7 +294,7 @@ fun ExploreRecommendItem(
                             else R.drawable.icon_explore_v4_un_favorite
                         ),
                         contentDescription = "Favorite",
-                        tint = Color.Unspecified,
+                        tint = if (item.praised) Color(0xFFFF5A5F) else Color.Unspecified,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(3.dp))
