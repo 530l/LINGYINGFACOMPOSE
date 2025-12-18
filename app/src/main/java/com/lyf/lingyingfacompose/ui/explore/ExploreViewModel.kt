@@ -7,6 +7,7 @@ import com.lyf.lingyingfacompose.data.ExploreBannerItem
 import com.lyf.lingyingfacompose.data.ExploreMenuItem
 import com.lyf.lingyingfacompose.data.ExploreTabItem
 import com.lyf.lingyingfacompose.data.ExploreUiState
+import com.lyf.lingyingfacompose.data.V3ExploreActivityBean
 import com.lyf.lingyingfacompose.data.V3ExploreRecommendBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,6 +93,7 @@ class ExploreViewModel : ViewModel() {
             menuItems = menuItems,
             tabItems = tabItems,
             recommendItems = emptyList(),
+            exploreActivityItems = mockList(),
             currentIndex = 0,
             isLoading = isLoading,
             error = null
@@ -264,6 +266,51 @@ class ExploreViewModel : ViewModel() {
         return list
     }
 
+
+    fun mockList(): List<V3ExploreActivityBean> {
+        return listOf(
+            V3ExploreActivityBean(
+                id = "10001",
+                title = "写给爸爸的一首歌",
+                subTitle = "最高可获得 10,000 FC",
+                workCount = 154_864,
+                imageUrl = "https://picsum.photos/400/225?random=1",
+                activityStatus = 1,
+                endTimestamp = System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000,
+                awardUsers = emptyList()
+            ),
+
+            V3ExploreActivityBean(
+                id = "10002",
+                title = "冬日创作季 · 原创音乐挑战",
+                subTitle = "人气作品将获得官方推荐",
+                workCount = 92_341,
+                imageUrl = "https://picsum.photos/400/225?random=2",
+                activityStatus = 2,
+                endTimestamp = System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000,
+                awardUsers = listOf(
+                    awardUser(1),
+                    awardUser(2),
+                    awardUser(3),
+                    awardUser(4)
+                )
+            ),
+
+            V3ExploreActivityBean(
+                id = "10003",
+                title = "新声代 · 原创翻唱计划",
+                subTitle = "参与即有机会登上首页推荐位",
+                workCount = 6_328,
+                imageUrl = "https://picsum.photos/400/225?random=3",
+                activityStatus = 0
+            )
+        )
+    }
+    private fun awardUser(index: Int) =
+        V3ExploreActivityBean.AwardUser(
+            userName = "用户$index",
+            headImgUrl = "https://cdn1.muse.top/147681da-cfcd-4dde-b401-e8470a5fa8fe.jpeg"
+        )
 
 }
 

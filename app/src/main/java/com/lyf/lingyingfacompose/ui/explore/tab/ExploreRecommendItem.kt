@@ -182,10 +182,8 @@ fun ExploreRecommendItem(
                     }
 
                     // 排名标签（左下角）
-                    //在 Jetpack Compose 中，Modifier.offset() 是用来调整组件相对于其原始位置的偏移量。
-                    // 这个函数允许你通过指定 x 和 y 的值来移动元素，其中：
-                    //x：表示水平方向上的偏移量。正值会使元素向右移动，而负值则向左移动。
-                    //y：表示垂直方向上的偏移量。正值会使元素向下移动，而负值则向上移动。
+                    //offset:当前元素整体 相对于它原本在父容器中应该摆放的位置进行偏移。
+                    //padding:当前元素内部 增加内边距，推开其子内容。
                     if (item.isShowRanking) {
                         Box(
                             modifier = Modifier
@@ -280,7 +278,7 @@ fun ExploreRecommendItem(
                         fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                      )
+                    )
                 }
 
                 // 点赞
@@ -294,7 +292,8 @@ fun ExploreRecommendItem(
                             else R.drawable.icon_explore_v4_un_favorite
                         ),
                         contentDescription = "Favorite",
-                        tint = if (item.praised) Color(0xFFFF5A5F) else Color.Unspecified,
+                        tint =  Color.Unspecified,
+                        // tint = if (item.praised) Color(0xFFFF5A5F) else Color.Unspecified,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(3.dp))
