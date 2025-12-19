@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -29,12 +28,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.lyf.lingyingfacompose.R
 import com.lyf.lingyingfacompose.data.V3ExploreRecommendBean
 import com.lyf.lingyingfacompose.utils.LikeCountFormatter
@@ -50,6 +52,7 @@ private val RankingGradientBrush = Brush.horizontalGradient(
     )
 )
 private val RankingBorderColor = Color(0x995D3C7F)
+
 @Composable
 fun ExploreRecommendItem(
     item: V3ExploreRecommendBean,
@@ -81,14 +84,15 @@ fun ExploreRecommendItem(
                 .padding(horizontal = 1.dp)
         ) {
             // 封面区域
-            val imageHeightDp = remember(item.isMv, item.isPortraitMv, item.isLandscapeMv, item.isSong) {
-                when {
-                    item.isMv && item.isPortraitMv -> 236.dp
-                    item.isMv && item.isLandscapeMv -> 133.dp
-                    item.isSong -> 177.dp
-                    else -> 0.dp
+            val imageHeightDp =
+                remember(item.isMv, item.isPortraitMv, item.isLandscapeMv, item.isSong) {
+                    when {
+                        item.isMv && item.isPortraitMv -> 236.dp
+                        item.isMv && item.isLandscapeMv -> 133.dp
+                        item.isSong -> 177.dp
+                        else -> 0.dp
+                    }
                 }
-            }
 
             if (imageHeightDp > 0.dp) {
                 Box(
@@ -97,14 +101,28 @@ fun ExploreRecommendItem(
                         .height(imageHeightDp)
                         .clip(CardShape)
                 ) {
+//                    AsyncImage(
+//                        model = item.imageUrl,
+//                        contentDescription = null,
+//                        modifier = Modifier.fillMaxSize(),
+//                        contentScale = ContentScale.Crop,
+//                        placeholder = painterResource(R.drawable.icon_logo),
+//                        error = painterResource(R.drawable.icon_logo)
+//                    )
+
                     AsyncImage(
-                        model = item.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(item.imageUrl)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Journal Image 2",
                         contentScale = ContentScale.Crop,
-                        placeholder = painterResource(R.drawable.icon_logo),
-                        error = painterResource(R.drawable.icon_logo)
+                        modifier = Modifier.fillMaxSize(),
+                        clipToBounds = true
                     )
+
 
                     // 音乐类型标签（左上角）
                     if (item.isSong || item.isMv) {
@@ -262,15 +280,31 @@ fun ExploreRecommendItem(
             ) {
                 // 用户信息
                 Row(verticalAlignment = Alignment.CenterVertically) {
+//                    AsyncImage(
+//                        model = item.headImgUrl,
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                            .size(18.dp)
+//                            .clip(CircleShape),
+//                        placeholder = painterResource(R.drawable.icon_logo),
+//                        error = painterResource(R.drawable.icon_logo)
+//                    )
+
                     AsyncImage(
-                        model = item.headImgUrl,
-                        contentDescription = null,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(item.imageUrl)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Journal Image 2",
+                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize(),
                         modifier = Modifier
-                            .size(18.dp)
-                            .clip(CircleShape),
-                        placeholder = painterResource(R.drawable.icon_logo),
-                        error = painterResource(R.drawable.icon_logo)
+                            .size(18.dp),
+                        clipToBounds = true
                     )
+
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = item.userName ?: "",
@@ -292,7 +326,7 @@ fun ExploreRecommendItem(
                             else R.drawable.icon_explore_v4_un_favorite
                         ),
                         contentDescription = "Favorite",
-                        tint =  Color.Unspecified,
+                        tint = Color.Unspecified,
                         // tint = if (item.praised) Color(0xFFFF5A5F) else Color.Unspecified,
                         modifier = Modifier.size(14.dp)
                     )

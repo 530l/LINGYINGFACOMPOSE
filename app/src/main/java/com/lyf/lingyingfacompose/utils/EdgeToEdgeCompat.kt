@@ -15,32 +15,32 @@ import androidx.core.view.WindowInsetsControllerCompat
 fun ComponentActivity.setEdgeToEdgeConfig() {
     // 启用 Edge-to-Edge
     enableEdgeToEdge()
-    
+
     // 设置状态栏和导航栏为透明
     window.statusBarColor = Color.TRANSPARENT
     window.navigationBarColor = Color.TRANSPARENT
-    
+
     // 使用 WindowCompat 获取 WindowInsetsController
     val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-    
+
     // 配置状态栏和导航栏样式
     configureSystemBars(windowInsetsController)
-    
+
     // Android 10 (API 29) 及以上版本，禁用导航栏对比度强制
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         window.isNavigationBarContrastEnforced = false
     }
-    
+
     // Android 11 (API 30) 及以上版本，设置系统栏外观
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         window.setDecorFitsSystemWindows(false)
     } else {
         @Suppress("DEPRECATION")
         window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        )
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                )
     }
 }
 
@@ -50,11 +50,11 @@ fun ComponentActivity.setEdgeToEdgeConfig() {
  */
 fun ComponentActivity.setSystemBarContentColor(isDarkBackground: Boolean) {
     val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-    
+
     // 设置状态栏内容颜色
     // isAppearanceLightStatusBars: true = 深色图标（浅色背景），false = 浅色图标（深色背景）
     windowInsetsController.isAppearanceLightStatusBars = !isDarkBackground
-    
+
     // 设置导航栏内容颜色
     // isAppearanceLightNavigationBars: true = 深色图标（浅色背景），false = 浅色图标（深色背景）
     windowInsetsController.isAppearanceLightNavigationBars = !isDarkBackground

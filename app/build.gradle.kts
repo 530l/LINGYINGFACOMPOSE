@@ -106,6 +106,16 @@ dependencies {
 
     implementation("io.github.ltttttttttttt:ComposeViews:1.9.0.4")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+
+    // --- Network (stable, Kotlin 2.0.x compatible) ---
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

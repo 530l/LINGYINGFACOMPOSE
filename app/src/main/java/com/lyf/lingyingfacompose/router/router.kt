@@ -8,8 +8,5 @@ import kotlinx.serialization.Serializable
 data object SplashRouter : NavKey
 
 @Serializable
-data object LoginRouter : NavKey
-
-@Serializable
 data object HomeScreenRouter: NavKey
 
