@@ -1,0 +1,13 @@
+package com.lyf.compose.router
+
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data object SplashRouter : NavKey
+
+@Serializable
+data object HomeScreenRouter: NavKey
+
+
