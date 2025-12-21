@@ -7,16 +7,16 @@ import org.junit.Test
 class NetworkResponseTest {
 
     @Test
-    fun requireData_success_returnsData() {
+    fun ensureSuccess() {
         val resp = NetworkResponse(data = "ok", errorCode = 0, errorMsg = "")
-        assertEquals("ok", resp.requireData())
+        assertEquals("ok", resp.ensureSuccess())
     }
 
     @Test
-    fun requireData_errorCode_throwsApiException() {
+    fun ensureSuccess_errorCode_throwsApiException() {
         val resp = NetworkResponse<String>(data = "x", errorCode = -1, errorMsg = "bad")
         try {
-            resp.requireData()
+            resp.ensureSuccess()
             throw AssertionError("Expected ApiException")
         } catch (e: ApiException) {
             assertEquals(-1, e.code)
@@ -25,10 +25,10 @@ class NetworkResponseTest {
     }
 
     @Test
-    fun requireData_nullData_throwsApiException() {
+    fun ensureSuccess_throwsApiException() {
         val resp = NetworkResponse<String>(data = null, errorCode = 0, errorMsg = "no data")
         try {
-            resp.requireData()
+            resp.ensureSuccess()
             throw AssertionError("Expected ApiException")
         } catch (e: ApiException) {
             assertEquals(0, e.code)

@@ -57,7 +57,7 @@ data class NetworkResponse<T>(
      * - code != 1000: throw ApiException
      * - code == 1000 but data == null: throw ApiException (treat as error)
      */
-    fun requireData(defaultMessage: String = "获取数据失败"): T {
+    fun ensureSuccess(defaultMessage: String = "获取数据失败"): T {
         if (!isSucceeded) {
             throw ApiException(
                 code = errorCode,

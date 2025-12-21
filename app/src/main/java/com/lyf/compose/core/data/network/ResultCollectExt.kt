@@ -19,6 +19,7 @@ inline fun <T> Flow<NetworkResult<T>>.launchCollect(
     crossinline onSuccess: (T) -> Unit,
     crossinline onError: (Throwable) -> Unit = {},
 ) = scope.launch {
+    //ollectLatest：若多次调用 requestXXXXX()，旧的收集会被取消，避免竞态问题。
     collectLatest { result ->
         when (result) {
             is NetworkResult.Loading -> onLoading()

@@ -2,6 +2,7 @@ package com.lyf.compose.feature.login
 
 import androidx.lifecycle.viewModelScope
 import com.lyf.compose.core.data.bean.Banner
+import com.lyf.compose.core.data.bean.Hotkey
 import com.lyf.compose.core.data.network.launchCollect
 import com.lyf.compose.core.data.repositories.AtmobRepositories
 import com.lyf.compose.core.vm.BaseViewModel
@@ -24,7 +25,8 @@ class LoginViewModel @Inject constructor(
         val errorMsg: String = "",
         val isLoginSuccess: Boolean = false,
         val token: String = "",
-        val banner: List<Banner> = emptyList()
+        val banner: List<Banner> = emptyList(),
+        val hotKeys: List<Hotkey> = emptyList(),
     )
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -71,4 +73,28 @@ class LoginViewModel @Inject constructor(
             onError = { e -> }
         )
     }
+
+    fun loadHomeData() {
+        repository.requestHomeInitData().launchCollect(
+            scope = viewModelScope,
+            onLoading = {
+                _uiState.value = _uiState.value.copy(isLoading = true, errorMsg = "")
+            },
+            onSuccess = { data ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    banner = data.banners,
+                    hotKeys = data.hotKeys
+                )
+            },
+            onError = { error ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMsg = error.message ?: "加载首页数据失败"
+                )
+            }
+        )
+    }
+
+
 }

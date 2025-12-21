@@ -1,6 +1,7 @@
 package com.lyf.compose.core.data.api
 
 import com.lyf.compose.core.data.bean.Banner
+import com.lyf.compose.core.data.bean.Hotkey
 import com.lyf.compose.core.data.bean.User
 import com.lyf.compose.core.data.network.NetworkResponse
 import retrofit2.http.Field
@@ -23,6 +24,10 @@ interface AtmobApi {
 
     @POST("/banner/json")
     suspend fun getBanner(): NetworkResponse<List<Banner>>
+
+
+    @POST("/hotkey/json")
+    suspend fun getHotKey(): NetworkResponse<List<Hotkey>>
 
 
 }
