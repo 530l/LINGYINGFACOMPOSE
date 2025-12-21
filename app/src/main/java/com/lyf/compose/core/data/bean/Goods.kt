@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 /**
  * 商品模型
- *
  * @param id ID
  * @param typeId 类型ID
  * @param title 标题
@@ -20,7 +19,6 @@ import kotlinx.serialization.Serializable
  * @param sortNum 排序
  * @param createTime 创建时间
  * @param updateTime 更新时间
- * @author Joker.X
  */
 @Serializable
 data class Goods(

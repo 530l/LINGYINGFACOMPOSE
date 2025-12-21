@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.lyf.compose.core.data.bean.V3ExploreActivityBean
 import com.lyf.compose.feature.explore.ExploreViewModel
 import com.lyf.compose.utils.LikeCountFormatter

@@ -9,7 +9,9 @@ import androidx.navigation3.ui.NavDisplay
 import com.lyf.compose.router.HomeScreenRouter
 import com.lyf.compose.router.SplashRouter
 import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.login.LoginScreen
 import com.lyf.compose.feature.splash.WelcomeScreen
+import com.lyf.compose.router.LoginRouter
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -37,9 +39,16 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
                     // 预热 Compose 运行环境 ,延迟1-2s，回到主页，后debug模式就不会太卡了
                     WelcomeScreen(
                         navigateToHome = {
-                            backStack.add(HomeScreenRouter)
+                            backStack.add(LoginRouter)
                         },
                     )
+                }
+                is LoginRouter -> NavEntry(key) {
+                    LoginScreen(onLoginSuccess = { token ->
+                        // 登录成功跳转到首页
+                        backStack.add(HomeScreenRouter)
+
+                    })
                 }
 
                 is HomeScreenRouter -> NavEntry(key) {

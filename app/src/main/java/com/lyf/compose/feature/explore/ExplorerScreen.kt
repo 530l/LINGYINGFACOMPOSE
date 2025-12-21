@@ -40,7 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.lt.compose_views.banner.Banner
 import com.lt.compose_views.banner.rememberBannerState
 import com.lt.compose_views.compose_pager.rememberScalePagerContentTransformation

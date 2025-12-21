@@ -11,3 +11,7 @@ data object SplashRouter : NavKey
 data object HomeScreenRouter: NavKey
 
 
+@Serializable
+data object LoginRouter: NavKey
+
+

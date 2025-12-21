@@ -9,9 +9,12 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     // Kotlin Serialization插件
     alias(libs.plugins.kotlin.serialization) apply false
-    // 依赖注入相关插件
     // Hilt插件，用于依赖注入框架的支持
     alias(libs.plugins.hilt) apply false
     // KSP (Kotlin Symbol Processing)插件，用于注解处理
     alias(libs.plugins.ksp) apply false
+    // Kotlin Parcelize插件，用于数据类序列化
+    alias(libs.plugins.kotlin.parcelize) apply false
+    // Room数据库插件，用于数据库操作
+    alias(libs.plugins.room) apply false
 }

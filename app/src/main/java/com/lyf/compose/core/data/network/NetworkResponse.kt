@@ -1,15 +1,26 @@
 package com.lyf.compose.core.data.network
 
 import androidx.annotation.Keep
-
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/**
+ * API 异常
+ *
+ * 当网络请求成功，但业务层返回错误时，抛出此异常
+ */
+class ApiException(
+    val code: Int,
+    override val message: String,
+    val rawResponse: Any? = null,
+) : RuntimeException(message)
 
 /**
  * 解析网络响应
  * @param T 数据类型
  * @param data 真实数据
  * @param code 状态码 等于1000表示成功
- * @param message 出错的提示信息
+ * @param errorMsg 出错的提示信息
  */
 @Keep
 @Serializable
@@ -18,27 +29,46 @@ data class NetworkResponse<T>(
      * 真实数据
      * 类型是泛型
      */
+    @SerialName("data")
     val data: T? = null,
 
     /**
-     * 状态码
-     * 等于0表示成功
+     * WanAndroid: errorCode == 0
      */
-    val code: Int = 1000,
+    @SerialName("errorCode")
+    val errorCode: Int = 0,
 
     /**
-     * 出错的提示信息
-     * 发生了错误不一定有
+     * WanAndroid: errorMsg
      */
-    val message: String? = null,
+    @SerialName("errorMsg")
+    val errorMsg: String? = null,
 
 
     ) {
     /**
-     * 是否成功
-     *
-     * @return 是否成功
-     * @author Joker.X
+     * WanAndroid 是否成功
      */
-    val isSucceeded: Boolean get() = code == 1000
+    val isSucceeded: Boolean get() = errorCode == 0
+
+    /**
+     * Unwrap 真实数据
+     *
+     * - code != 1000: throw ApiException
+     * - code == 1000 but data == null: throw ApiException (treat as error)
+     */
+    fun requireData(defaultMessage: String = "获取数据失败"): T {
+        if (!isSucceeded) {
+            throw ApiException(
+                code = errorCode,
+                message = errorMsg ?: defaultMessage,
+                rawResponse = this
+            )
+        }
+        return data ?: throw ApiException(
+            code = errorCode,
+            message = errorMsg ?: defaultMessage,
+            rawResponse = this
+        )
+    }
 }

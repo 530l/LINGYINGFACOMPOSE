@@ -3,16 +3,28 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     // Android 应用构建插件
     alias(libs.plugins.android.application)
+
     // Kotlin Android 支持
     alias(libs.plugins.kotlin.android)
+
     // Compose 编译插件
     alias(libs.plugins.kotlin.compose)
+
     // Kotlin 序列化插件
     alias(libs.plugins.kotlin.serialization)
+
     // Hilt 依赖注入插件
     alias(libs.plugins.hilt)
+
+    //Parcelable 实现生成器
+    alias(libs.plugins.kotlin.parcelize)
+
     // KSP 注解处理插件
     alias(libs.plugins.ksp)
+
+    // Room 持久化数据库
+    alias(libs.plugins.room)
+
 }
 
 android {
@@ -93,8 +105,8 @@ android {
             signingConfig = signingConfigs.getByName("common")
             // debug 模式下包名后缀
             applicationIdSuffix = ".debug"
-            // debug 模式下的请求 url 地址
-            buildConfigField("String", "BASE_URL", "\"https://mall.dusksnow.top/app/\"")
+            // debug 模式下的请求 url 地址 https://www.wanandroid.com
+            buildConfigField("String", "BASE_URL", "\"https://www.wanandroid.com\"")
             // 根据当前构建类型是否为 debug 模式来判断是否开启 debug 模式
             buildConfigField("Boolean", "DEBUG", "true")
         }
@@ -108,7 +120,7 @@ android {
             // 正式发布模式下的签名配置（配置完 common 签名配置后，取消注释以下行）
             signingConfig = signingConfigs.getByName("common")
             // 正式发布模式下的请求 url 地址
-            buildConfigField("String", "BASE_URL", "\"https://mall.dusksnow.top/app/\"")
+            buildConfigField("String", "BASE_URL", "\"https://www.wanandroid.com\"")
             // 根据当前构建类型是否为 debug 模式来判断是否开启 debug 模式
             buildConfigField("Boolean", "DEBUG", "false")
             // 混淆规则文件
@@ -131,7 +143,12 @@ android {
         buildConfig = true
     }
 
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
 }
+
 kotlin {
     compilerOptions {
         // Kotlin 编译生成的 JVM 字节码版本
@@ -144,6 +161,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // AndroidX Core 基础
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -156,7 +174,13 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.coil.compose)
+
+    // 图片加载
+//    implementation(libs.coil.compose)
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+
+    // ComposeViews
     implementation(libs.composeviews)
 
     // 导航组件 (Navigation3)
@@ -174,6 +198,7 @@ dependencies {
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.material3)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
 
@@ -184,7 +209,8 @@ dependencies {
     implementation(libs.toaster)
 
     // 数据存储
-    implementation(libs.mmkv)
+//    implementation(libs.mmkv)
+    implementation("com.tencent:mmkv:2.3.0")
 
     // 日志
     implementation(libs.timber)

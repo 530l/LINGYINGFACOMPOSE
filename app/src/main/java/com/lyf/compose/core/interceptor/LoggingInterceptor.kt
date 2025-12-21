@@ -6,8 +6,6 @@ import javax.inject.Singleton
 
 /**
  * 日志拦截器 - 记录网络请求日志
- *
- * @author Joker.X
  */
 @Singleton
 class LoggingInterceptor @Inject constructor() {
