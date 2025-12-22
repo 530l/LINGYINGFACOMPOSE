@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -113,7 +113,7 @@ fun ExploreActivityItem(
         ) {
 
             Text(
-                text = model.title.orEmpty(),
+                text = model.title,
                 color = Color(0xE6FFFFFF),
                 fontSize = 14.sp,
                 maxLines = 2,
