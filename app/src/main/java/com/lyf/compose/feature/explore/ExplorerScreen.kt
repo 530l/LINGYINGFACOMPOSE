@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.lt.compose_views.banner.Banner
 import com.lt.compose_views.banner.rememberBannerState
@@ -61,7 +62,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ExplorerScreen(viewModel: ExploreViewModel = hiltViewModel()) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
