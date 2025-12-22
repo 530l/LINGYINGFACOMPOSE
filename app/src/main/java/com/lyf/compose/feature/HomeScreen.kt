@@ -67,7 +67,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
-            // 明确不预加载额外 page（减少首屏合成/measure 压力）
+            // 明确不预加载额外 page（减少首屏合成/measure 压力)
             beyondViewportPageCount = 0,
             modifier = Modifier.weight(1f)
         ) { page ->
@@ -141,4 +141,3 @@ private fun TabItem(
         Text(title, fontSize = 12.sp, color = tint)
     }
 }
-

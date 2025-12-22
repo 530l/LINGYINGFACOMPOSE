@@ -8,10 +8,31 @@ import kotlinx.serialization.Serializable
 data object SplashRouter : NavKey
 
 @Serializable
-data object HomeScreenRouter: NavKey
+data object HomeScreenRouter : NavKey
 
 
 @Serializable
-data object LoginRouter: NavKey
+data object LoginRouter : NavKey
 
+/////////////
+@Serializable
+data object SideEffectRouter : NavKey
+
+@Serializable
+data object LaunchedEffectRouter : NavKey
+
+@Serializable
+data object DisposableEffectRouter : NavKey
+
+@Serializable
+data object RememberUpdatedStateRouter : NavKey
+
+@Serializable
+data object ProduceStateRouter : NavKey
+
+@Serializable
+data object RememberCoroutineScopeRouter : NavKey
+
+@Serializable
+data object SnapshotFlowRouter : NavKey
 

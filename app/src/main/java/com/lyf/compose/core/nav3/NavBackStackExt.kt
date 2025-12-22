@@ -1,4 +1,4 @@
-package com.lyf.compose.core.nav
+package com.lyf.compose.core.nav3
 
 /**
  * Navigation3 backStack 的安全工具。

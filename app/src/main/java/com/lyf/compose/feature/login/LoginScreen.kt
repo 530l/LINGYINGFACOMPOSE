@@ -30,7 +30,7 @@ import com.lyf.compose.core.data.session.SessionManager
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (String) -> Unit // 登录成功后的跳转回调
+    onLoginSuccess: () -> Unit // 登录成功后的跳转回调
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -97,7 +97,7 @@ fun LoginScreen(
     LaunchedEffect(uiState.isLoginSuccess) {
         if (uiState.isLoginSuccess) {
             SessionManager.setToken(uiState.token)
-            onLoginSuccess(uiState.token)
+            onLoginSuccess()
             // 关键：消费一次性事件，防止后续重组/再次进入页面重复触发
             viewModel.consumeLoginSuccess()
         }

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,12 +19,14 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.hjq.toast.Toaster
 import com.lyf.compose.core.data.session.SessionManager
-import com.lyf.compose.core.nav.navigateRootNonEmpty
-import com.lyf.compose.feature.HomeScreen
-import com.lyf.compose.feature.login.LoginScreen
+import com.lyf.compose.core.nav3.LocalNavigator
+import com.lyf.compose.core.nav3.NavRegistry
+import com.lyf.compose.core.nav3.createNavigator
+import com.lyf.compose.core.nav3.navigateRootNonEmpty
 import com.lyf.compose.feature.splash.WelcomeScreen
 import com.lyf.compose.router.HomeScreenRouter
 import com.lyf.compose.router.LoginRouter
+import com.lyf.compose.router.RouterRegistrations
 import com.lyf.compose.router.SplashRouter
 import kotlinx.coroutines.delay
 
@@ -46,15 +49,14 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
         }
     }
 
+    // 注册应用内所有模块路由（集中式注册在 router 包）
+    RouterRegistrations.registerAll()
+
     // 全局登录态：token 变化会驱动自动分流
     val token by SessionManager.tokenFlow.collectAsState()
     val isLoggedIn = token.isNotBlank()
 
-    /**
-     * 是否已经播放完 Splash 动画。
-     * - true: 允许执行“登录态分流”
-     * - false: 强制停留在 Splash，避免一启动就跳走
-     */
+    //是否已经播放完 Splash 动画。
     var splashFinished by remember { mutableStateOf(false) }
 
     // 登录态分流：Splash 未结束时锁定 Splash；结束后跳转到 Home/Login
@@ -104,32 +106,37 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
     // 系统返回键（物理/手势）优先走这里
     BackHandler(enabled = true) { handleBack() }
 
-    NavDisplay(
-        backStack = backStack,
-        // NavDisplay.onBack：用于你自己在 UI 内部触发的“返回”（比如 TopBar 返回按钮）
-        onBack = { handleBack() },
-        entryProvider = { key ->
-            when (key) {
-                is SplashRouter -> NavEntry(key) {
-                    WelcomeScreen(
-                        navigateToNext = {
-                            // Splash 动画结束：只标记完成。
-                            // 具体跳转到 Home/Login 由 LaunchedEffect(isLoggedIn, splashFinished) 统一分流。
-                            splashFinished = true
-                        }
-                    )
+    //创建一个由导航返回堆栈支持的导航器，并通过CompositionLocal提供它
+    //其实就是抽取行为，通过回调的形式，入栈 和出栈
+    val navigator = remember(backStack) {
+        createNavigator(
+            navigateAdd = { backStack.add(it) },
+            navigateRootNonEmpty = { backStack.navigateRootNonEmpty(it) },
+            popLast = { backStack.removeLastOrNull() }
+        )
+    }
+
+    CompositionLocalProvider(LocalNavigator provides navigator) {
+        NavDisplay(
+            backStack = backStack,
+            // NavDisplay.onBack：用于你自己在 UI 内部触发的“返回”
+            // （比如 TopBar 返回按钮）
+            onBack = { handleBack() },
+            entryProvider = { key ->
+                when (key) {
+                    is SplashRouter -> NavEntry(key) {
+                        WelcomeScreen(
+                            navigateToNext = {
+                                // Splash 动画结束：只标记完成。
+                                // 具体跳转到 Home/Login 由 LaunchedEffect(isLoggedIn, splashFinished) 统一分流。
+                                splashFinished = true
+                            }
+                        )
+                    }
+
+                    else -> NavRegistry.createEntry(key)
                 }
-
-                is LoginRouter -> NavEntry(key) {
-                    // 登录成功后由 LoginScreen 内部 SessionManager.setToken() 更新 tokenFlow。
-                    // 这里不再手动跳转，让登录态分流统一接管。
-                    LoginScreen(onLoginSuccess = { /* no-op */ })
-                }
-
-                is HomeScreenRouter -> NavEntry(key) { HomeScreen() }
-
-                else -> error("Unknown navigation key: $key")
             }
-        }
-    )
+        )
+    }
 }

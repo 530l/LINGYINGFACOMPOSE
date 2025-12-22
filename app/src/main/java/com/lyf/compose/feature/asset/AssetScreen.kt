@@ -1,6 +1,7 @@
 package com.lyf.compose.feature.asset
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyf.compose.core.nav3.LocalNavigator
 import com.lyf.compose.core.theme.BgContentLight
 import com.lyf.compose.core.theme.BgWhiteLight
 import com.lyf.compose.core.theme.PrimaryLight
@@ -32,7 +34,10 @@ import com.lyf.compose.core.theme.TextWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AssetScreen(viewModel: AssetViewModel = hiltViewModel()) {
+fun AssetScreen(
+    viewModel: AssetViewModel = hiltViewModel(),
+) {
+    val navigator = LocalNavigator.current
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val assetList = uiState.value.assetList
     Scaffold(
@@ -73,6 +78,9 @@ fun AssetScreen(viewModel: AssetViewModel = hiltViewModel()) {
                     modifier = Modifier
                         .background(PrimaryLight, ShapeLarge)
                         .padding(12.dp)
+                        .clickable(onClick = {
+                            navigator.navigate(it.navKey)
+                        })
                 ) {
                     Text(text = it.title, fontSize = 18.sp, color = TextWhite)
                     Text(text = it.subTitle, fontSize = 14.sp, color = TextWhite)
