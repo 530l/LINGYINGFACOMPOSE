@@ -11,10 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalSmall
-import com.joker.kit.core.designsystem.theme.SpacePaddingLarge
-import com.joker.kit.core.designsystem.theme.SpacePaddingMedium
-import com.joker.kit.core.designsystem.theme.SpacePaddingSmall
+import com.lyf.compose.core.theme.SpaceHorizontalSmall
+import com.lyf.compose.core.theme.SpacePaddingLarge
+import com.lyf.compose.core.theme.SpacePaddingMedium
+import com.lyf.compose.core.theme.SpacePaddingSmall
 
 /**
  * 封装的Row组件，预设了常用的修饰符

@@ -5,17 +5,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalMedium
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalSmall
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalXLarge
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalXSmall
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalXXLarge
-import com.joker.kit.core.designsystem.theme.SpaceVerticalLarge
-import com.joker.kit.core.designsystem.theme.SpaceVerticalMedium
-import com.joker.kit.core.designsystem.theme.SpaceVerticalSmall
-import com.joker.kit.core.designsystem.theme.SpaceVerticalXLarge
-import com.joker.kit.core.designsystem.theme.SpaceVerticalXSmall
-import com.joker.kit.core.designsystem.theme.SpaceVerticalXXLarge
+import com.lyf.compose.core.theme.SpaceHorizontalMedium
+import com.lyf.compose.core.theme.SpaceHorizontalSmall
+import com.lyf.compose.core.theme.SpaceHorizontalXLarge
+import com.lyf.compose.core.theme.SpaceHorizontalXSmall
+import com.lyf.compose.core.theme.SpaceHorizontalXXLarge
+import com.lyf.compose.core.theme.SpaceVerticalLarge
+import com.lyf.compose.core.theme.SpaceVerticalMedium
+import com.lyf.compose.core.theme.SpaceVerticalSmall
+import com.lyf.compose.core.theme.SpaceVerticalXLarge
+import com.lyf.compose.core.theme.SpaceVerticalXSmall
+import com.lyf.compose.core.theme.SpaceVerticalXXLarge
 
 
 /**

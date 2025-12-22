@@ -1,4 +1,4 @@
-package com.joker.kit.core.designsystem.theme
+package com.lyf.compose.core.theme
 
 import androidx.compose.ui.unit.dp
 

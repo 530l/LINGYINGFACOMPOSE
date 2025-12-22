@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.joker.kit.core.designsystem.theme.SpacePaddingLarge
+import com.lyf.compose.core.theme.SpacePaddingLarge
 import com.lyf.compose.R
 import com.lyf.compose.core.theme.AppTheme
 import com.lyf.compose.core.ui.material3.SpaceVerticalSmall

@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.joker.kit.core.designsystem.theme.SpacePaddingLarge
-import com.joker.kit.core.designsystem.theme.SpacePaddingMedium
-import com.joker.kit.core.designsystem.theme.SpacePaddingSmall
+import com.lyf.compose.core.theme.SpacePaddingLarge
+import com.lyf.compose.core.theme.SpacePaddingMedium
+import com.lyf.compose.core.theme.SpacePaddingSmall
 
 /**
  * 封装的Box组件，预设了常用的修饰符

@@ -29,10 +29,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalMedium
-import com.joker.kit.core.designsystem.theme.SpaceHorizontalXXLarge
-import com.joker.kit.core.designsystem.theme.SpacePaddingMedium
-import com.joker.kit.core.designsystem.theme.SpaceVerticalMedium
+import com.lyf.compose.core.theme.SpaceHorizontalMedium
+import com.lyf.compose.core.theme.SpaceHorizontalXXLarge
+import com.lyf.compose.core.theme.SpacePaddingMedium
+import com.lyf.compose.core.theme.SpaceVerticalMedium
 import com.lyf.compose.core.state.LoadMoreState
 import com.lyf.compose.core.ui.components.loading.LoadMore
 
