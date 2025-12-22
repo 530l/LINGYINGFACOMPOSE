@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyf.compose.utils.storage.MMKVUtils
 
 @Composable
 fun LoginScreen(
@@ -92,10 +93,10 @@ fun LoginScreen(
         }
     }
 
-    // 登录成功：触发跳转（副作用，用 LaunchedEffect 避免重组重复执行）
+    // 监听登录成功状态，执行跳转回调 ,LaunchedEffect 根据key 变化重新执行
     LaunchedEffect(uiState.isLoginSuccess) {
-        onLoginSuccess(uiState.token)
         if (uiState.isLoginSuccess) {
+            MMKVUtils.putString()
             onLoginSuccess(uiState.token)
         }
     }

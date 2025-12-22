@@ -38,10 +38,13 @@ import com.lyf.compose.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
-
+// Compose 使用 Kotlin 编译器插件，首次运行需要：
+// 编译 Compose 运行时代码
+// 生成和缓存 Compose 类
+// 预热 Compose 运行环境 ,延迟1-2s，回到主页，后debug模式就不会太卡了
 @Composable
 fun WelcomeScreen(
-    navigateToHome: () -> Unit
+    navigateToNext : () -> Unit
 ) {
     // 动画状态控制
     val logoScale = remember { Animatable(0.8f) }
@@ -121,7 +124,7 @@ fun WelcomeScreen(
 
         // 等待2秒后跳转
         delay(1500)
-        navigateToHome()
+        navigateToNext ()
     }
 
     Box(

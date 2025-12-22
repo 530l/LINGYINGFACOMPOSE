@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
             false
         }
     }
+
+    // 说明：返回键逻辑（包含“主页双击退出”）统一在 AppNavHost 的 NavDisplay(onBack=...) 中处理。
 }
 
 
