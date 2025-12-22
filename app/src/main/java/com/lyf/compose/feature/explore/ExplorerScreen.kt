@@ -27,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,12 +46,12 @@ import com.lt.compose_views.banner.rememberBannerState
 import com.lt.compose_views.compose_pager.rememberScalePagerContentTransformation
 import com.lt.compose_views.pager_indicator.PagerIndicator
 import com.lyf.compose.R
-import com.lyf.compose.core.ui.components.CustomTabRow
-import com.lyf.compose.core.ui.components.cancelRipperClick
 import com.lyf.compose.core.data.bean.ExploreBannerItem
 import com.lyf.compose.core.data.bean.ExploreMenuItem
 import com.lyf.compose.core.data.bean.ExploreTabItem
 import com.lyf.compose.core.data.bean.V3ExploreRecommendBean
+import com.lyf.compose.core.ui.components.CustomTabRow
+import com.lyf.compose.core.ui.components.cancelRipperClick
 import com.lyf.compose.feature.explore.tab.ExploreActivityScreen
 import com.lyf.compose.feature.explore.tab.ExploreRankingScreen
 import com.lyf.compose.feature.explore.tab.ExploreRecommendScreen
