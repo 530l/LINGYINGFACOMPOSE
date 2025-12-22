@@ -46,7 +46,7 @@ class LoginViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         isLoginSuccess = true,
-                        token = user.token
+                        token = user.id.toString()
                     )
                 }
             },
@@ -96,5 +96,15 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    /**
+     * 消费登录成功事件。
+     *
+     * 说明：isLoginSuccess 属于一次性事件标记。若不在 UI 层消费后重置，
+     * 当页面再次进入/重组时会重复触发，可能导致：
+     * - 退出登录后刚回到 Login，又被旧成功状态立刻 setToken 拉回 Home（出现“闪一下”）
+     */
+    fun consumeLoginSuccess() {
+        _uiState.update { it.copy(isLoginSuccess = false) }
+    }
 
 }

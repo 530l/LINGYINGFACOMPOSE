@@ -6,6 +6,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.lyf.compose.BuildConfig
 import com.lyf.compose.core.data.api.AtmobApi
 import com.lyf.compose.core.data.repositories.AtmobRepositories
+import com.lyf.compose.core.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,6 +58,8 @@ object NetworkModule {
             .connectTimeout(10, TimeUnit.SECONDS) // 连接超时时间
             .writeTimeout(10, TimeUnit.SECONDS) // 写超时时间
             .readTimeout(10, TimeUnit.SECONDS) // 读超时时间
+            // 鉴权：自动加 token + 401 清 token
+            .addInterceptor(AuthInterceptor())
             .addInterceptor(loggingInterceptor)
             .apply {
                 if (BuildConfig.DEBUG) {

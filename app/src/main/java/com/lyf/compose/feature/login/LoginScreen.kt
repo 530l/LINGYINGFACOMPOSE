@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lyf.compose.utils.storage.MMKVUtils
+import com.lyf.compose.core.data.session.SessionManager
 
 @Composable
 fun LoginScreen(
@@ -96,8 +96,10 @@ fun LoginScreen(
     // 监听登录成功状态，执行跳转回调 ,LaunchedEffect 根据key 变化重新执行
     LaunchedEffect(uiState.isLoginSuccess) {
         if (uiState.isLoginSuccess) {
-            MMKVUtils.putString()
+            SessionManager.setToken(uiState.token)
             onLoginSuccess(uiState.token)
+            // 关键：消费一次性事件，防止后续重组/再次进入页面重复触发
+            viewModel.consumeLoginSuccess()
         }
     }
 }
