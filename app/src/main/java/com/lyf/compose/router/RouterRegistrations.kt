@@ -2,6 +2,9 @@ package com.lyf.compose.router
 
 import com.lyf.compose.core.nav3.NavRegistry
 import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.asset.DisposableEffectScreen
+import com.lyf.compose.feature.asset.LaunchedEffectScreen
+import com.lyf.compose.feature.asset.RememberUpdatedStateScreen
 import com.lyf.compose.feature.asset.SideEffectScreen
 import com.lyf.compose.feature.login.LoginScreen
 
@@ -18,6 +21,16 @@ object RouterRegistrations {
         }
         NavRegistry.register(SideEffectRouter::class) { _ ->
             SideEffectScreen()
+        }
+        NavRegistry.register(LaunchedEffectRouter::class) { _ ->
+            LaunchedEffectScreen()
+        }
+
+        NavRegistry.register(DisposableEffectRouter::class) { _ ->
+            DisposableEffectScreen()
+        }
+        NavRegistry.register(RememberUpdatedStateRouter::class) { _ ->
+            RememberUpdatedStateScreen()
         }
     }
 }

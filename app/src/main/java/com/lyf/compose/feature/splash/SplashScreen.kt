@@ -123,7 +123,7 @@ fun WelcomeScreen(
         }
 
         // 等待2秒后跳转
-        delay(1500)
+        delay(500)
         navigateToNext ()
     }
 
