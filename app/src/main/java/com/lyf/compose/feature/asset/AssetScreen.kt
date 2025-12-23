@@ -79,7 +79,7 @@ fun AssetScreen(
                         .background(PrimaryLight, ShapeLarge)
                         .padding(12.dp)
                         .clickable(onClick = {
-                            navigator.navigate(it.navKey)
+                            if (it.id <= 3) navigator.navigate(it.navKey)
                         })
                 ) {
                     Text(text = it.title, fontSize = 18.sp, color = TextWhite)
