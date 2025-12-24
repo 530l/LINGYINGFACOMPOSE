@@ -107,7 +107,6 @@ fun RefreshContent(
  * @param onLoadMore 加载更多回调
  * @param shouldTriggerLoadMore 判断是否应该触发加载更多的函数
  * @param content 列表内容构建器
- * @author Joker.X
  */
 @Composable
 private fun RefreshListContent(
@@ -164,7 +163,6 @@ private fun RefreshListContent(
  * @param onLoadMore 加载更多回调
  * @param shouldTriggerLoadMore 判断是否应该触发加载更多的函数
  * @param content 网格内容构建器
- * @author Joker.X
  */
 @Composable
 private fun RefreshGridContent(

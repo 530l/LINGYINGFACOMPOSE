@@ -161,7 +161,7 @@ private fun LoadMoreDivider(modifier: Modifier = Modifier) {
 /**
  * OrderLoadMore 组件预览
  *
- * @author Joker.X
+ * 
  */
 @Preview(showBackground = true)
 @Composable
@@ -201,8 +201,6 @@ private fun OrderLoadMorePreview() {
 
 /**
  * OrderLoadMore 组件深色主题预览
- *
- * @author Joker.X
  */
 @Preview(showBackground = true)
 @Composable
