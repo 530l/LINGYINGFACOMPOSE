@@ -31,6 +31,7 @@ import com.lyf.compose.core.theme.PrimaryLight
 import com.lyf.compose.core.theme.ShapeLarge
 import com.lyf.compose.core.theme.TextPrimaryLight
 import com.lyf.compose.core.theme.TextWhite
+import com.lyf.compose.router.RefreshRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +80,8 @@ fun AssetScreen(
                         .background(PrimaryLight, ShapeLarge)
                         .padding(12.dp)
                         .clickable(onClick = {
-                            if (it.id <= 3) navigator.navigate(it.navKey)
+//                            if (it.id <= 3) navigator.navigate(it.navKey)
+                            navigator.navigate(RefreshRouter)
                         })
                 ) {
                     Text(text = it.title, fontSize = 18.sp, color = TextWhite)

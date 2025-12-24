@@ -1,6 +1,7 @@
 package com.lyf.compose.core.data.repositories
 
 import com.lyf.compose.core.data.api.AtmobApi
+import com.lyf.compose.core.data.bean.Article
 import com.lyf.compose.core.data.bean.Banner
 import com.lyf.compose.core.data.bean.HomeInitData
 import com.lyf.compose.core.data.bean.User
@@ -10,25 +11,12 @@ import com.lyf.compose.core.data.network.networkResultFlow
 import com.lyf.compose.core.data.network.networkResultFlowFromSuspend
 import com.lyf.compose.core.data.network.safeApiCallMulti
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AtmobRepositories @Inject constructor(
     private val atmobApi: AtmobApi
 ) {
-
-
-//    suspend fun loginByPassword(params: Map<String, String>): User =
-//        unwrapApiCall { atmobApi.loginByPassword(params) }
-//
-
-    fun loginByPassword(username: String, password: String): Flow<NetworkResult<User>> =
-        networkResultFlow { atmobApi.loginByPassword(username, password) }
-
-
-    fun requestBanner(): Flow<NetworkResult<List<Banner>>> =
-        networkResultFlow { atmobApi.getBanner() }
-
-
     /**
      * 并发获取 Banner 和 HotKey
      * - 两个请求同时发起
@@ -48,4 +36,22 @@ class AtmobRepositories @Inject constructor(
      */
     fun requestHomeInitData(): Flow<NetworkResult<HomeInitData>> =
         networkResultFlowFromSuspend { fetchHomeInitData() }
+
+
+//    suspend fun loginByPassword(params: Map<String, String>): User =
+//        unwrapApiCall { atmobApi.loginByPassword(params) }
+//
+
+    fun loginByPassword(username: String, password: String): Flow<NetworkResult<User>> =
+        networkResultFlow { atmobApi.loginByPassword(username, password) }
+
+
+    fun requestBanner(): Flow<NetworkResult<List<Banner>>> =
+        networkResultFlow { atmobApi.getBanner() }
+
+    fun requestArticleList(page: Int): Flow<NetworkResult<Article>> =
+        networkResultFlow { atmobApi.getArticleList(page) }
+
+
+
 }

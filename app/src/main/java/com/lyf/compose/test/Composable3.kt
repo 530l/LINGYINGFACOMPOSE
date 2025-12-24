@@ -38,7 +38,9 @@ fun ComposableScreen3() {
         verticalArrangement = Arrangement.Center
     ) {
         items(30) { index ->
-            Box(modifier = Modifier.clickable { position = index }) {
+            Box(modifier = Modifier.clickable {
+                position = index
+            }) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

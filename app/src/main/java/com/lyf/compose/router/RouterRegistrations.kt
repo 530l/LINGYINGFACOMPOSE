@@ -7,6 +7,7 @@ import com.lyf.compose.feature.asset.LaunchedEffectScreen
 import com.lyf.compose.feature.asset.RememberUpdatedStateScreen
 import com.lyf.compose.feature.asset.SideEffectScreen
 import com.lyf.compose.feature.login.LoginScreen
+import com.lyf.compose.feature.refresh.RefreshScreen
 
 /**
  *  路由注册
@@ -31,6 +32,9 @@ object RouterRegistrations {
         }
         NavRegistry.register(RememberUpdatedStateRouter::class) { _ ->
             RememberUpdatedStateScreen()
+        }
+        NavRegistry.register(RefreshRouter::class) { _ ->
+            RefreshScreen()
         }
     }
 }

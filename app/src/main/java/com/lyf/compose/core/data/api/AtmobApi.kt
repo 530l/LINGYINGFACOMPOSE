@@ -1,5 +1,6 @@
 package com.lyf.compose.core.data.api
 
+import com.lyf.compose.core.data.bean.Article
 import com.lyf.compose.core.data.bean.Banner
 import com.lyf.compose.core.data.bean.Hotkey
 import com.lyf.compose.core.data.bean.User
@@ -7,6 +8,8 @@ import com.lyf.compose.core.data.network.NetworkResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface AtmobApi {
 
@@ -28,6 +31,10 @@ interface AtmobApi {
 
     @POST("/hotkey/json")
     suspend fun getHotKey(): NetworkResponse<List<Hotkey>>
+
+    // WanAndroid 分页文章
+    @GET("/article/list/{page}/json")
+    suspend fun getArticleList(@Path("page") page: Int): NetworkResponse<Article>
 
 
 }

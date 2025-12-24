@@ -36,3 +36,7 @@ data object RememberCoroutineScopeRouter : NavKey
 @Serializable
 data object SnapshotFlowRouter : NavKey
 
+
+@Serializable
+data object RefreshRouter : NavKey
+
