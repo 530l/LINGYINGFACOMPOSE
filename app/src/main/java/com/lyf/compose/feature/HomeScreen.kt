@@ -137,7 +137,9 @@ private fun TabItem(
             bottom = 10.dp
         ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(painterResource(iconId), title, Modifier.size(24.dp), tint = Color.Unspecified)
+        Icon(painterResource(iconId),
+            title, Modifier.size(24.dp),
+            tint = Color.Unspecified)
         Text(title, fontSize = 12.sp, color = tint)
     }
 }
