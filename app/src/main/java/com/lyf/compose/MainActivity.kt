@@ -16,22 +16,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 启动页
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        // 启用边缘到边缘的显示效果
         enableEdgeToEdge()
-        // 设置Compose内容
-        setContent { // 应用主题包装
+        setContent {
             AppTheme { AppNavHost() }
         }
-        // 不让启动界面一直显示
-        splashScreen.setKeepOnScreenCondition {
-            false
-        }
     }
-
-    // 说明：返回键逻辑（包含“主页双击退出”）统一在 AppNavHost 的 NavDisplay(onBack=...) 中处理。
 }
 
 

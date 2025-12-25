@@ -40,10 +40,7 @@ fun BaseNetWorkListView(
     customEmpty: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .padding(padding)
-    ) {
+    Box(modifier = modifier.padding(padding)) {
         AnimatedContent(
             targetState = uiState,
             transitionSpec = {

@@ -8,6 +8,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +36,7 @@ inline fun <T> safeApiCall(
         // ④ 发射 Success 状态
         emit(NetworkResult.Success(successInv))
     } catch (t: Throwable) {
+        Timber.d("safeApiCall ：$t")
         // ⑤ 捕获任何异常（网络异常、解析异常、业务错误等）
         emit(NetworkResult.Error(t))
     }

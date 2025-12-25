@@ -40,3 +40,14 @@ data object SnapshotFlowRouter : NavKey
 @Serializable
 data object RefreshRouter : NavKey
 
+
+@Serializable
+data object AnimatedVisibilityRouter : NavKey
+
+
+@Serializable
+data object AnimateContentSizeRouter : NavKey
+
+
+@Serializable
+data object AnimatedContentRouter : NavKey

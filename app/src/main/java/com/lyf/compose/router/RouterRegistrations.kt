@@ -2,6 +2,9 @@ package com.lyf.compose.router
 
 import com.lyf.compose.core.nav3.NavRegistry
 import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.animated.AnimateContentSizeScreen
+import com.lyf.compose.feature.animated.AnimatedContentScreen
+import com.lyf.compose.feature.animated.AnimatedVisibilityScreen
 import com.lyf.compose.feature.asset.DisposableEffectScreen
 import com.lyf.compose.feature.asset.LaunchedEffectScreen
 import com.lyf.compose.feature.asset.RememberUpdatedStateScreen
@@ -35,6 +38,16 @@ object RouterRegistrations {
         }
         NavRegistry.register(RefreshRouter::class) { _ ->
             RefreshScreen()
+        }
+        NavRegistry.register(AnimatedVisibilityRouter::class) { _ ->
+            AnimatedVisibilityScreen()
+        }
+        NavRegistry.register(AnimateContentSizeRouter::class) { _ ->
+            AnimateContentSizeScreen()
+        }
+
+        NavRegistry.register(AnimatedContentRouter::class) { _ ->
+            AnimatedContentScreen()
         }
     }
 }

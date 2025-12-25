@@ -78,8 +78,6 @@ data class ArticleBean(
     var superChapterId: Int = 0,
     @SerialName("superChapterName")
     var superChapterName: String = "",
-    @SerialName("tags")
-    var tags: List<String> = listOf(),
     @SerialName("title")
     var title: String = "",
     @SerialName("type")
