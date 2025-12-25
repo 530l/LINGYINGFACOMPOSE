@@ -2,6 +2,8 @@ package com.lyf.compose.router
 
 import com.lyf.compose.core.nav3.NavRegistry
 import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.animated.AnimatableScreen
+import com.lyf.compose.feature.animated.AnimateAsStateScreen
 import com.lyf.compose.feature.animated.AnimateContentSizeScreen
 import com.lyf.compose.feature.animated.AnimatedContentScreen
 import com.lyf.compose.feature.animated.AnimatedVisibilityScreen
@@ -48,6 +50,14 @@ object RouterRegistrations {
 
         NavRegistry.register(AnimatedContentRouter::class) { _ ->
             AnimatedContentScreen()
+        }
+
+        NavRegistry.register(AnimateAsStateRouter::class) { _ ->
+            AnimateAsStateScreen()
+        }
+
+        NavRegistry.register(AnimatableRouter::class) { _ ->
+            AnimatableScreen()
         }
     }
 }

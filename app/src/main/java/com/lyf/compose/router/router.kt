@@ -51,3 +51,10 @@ data object AnimateContentSizeRouter : NavKey
 
 @Serializable
 data object AnimatedContentRouter : NavKey
+
+@Serializable
+data object AnimateAsStateRouter : NavKey
+
+
+@Serializable
+data object AnimatableRouter : NavKey

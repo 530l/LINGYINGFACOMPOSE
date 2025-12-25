@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
 import com.lyf.compose.core.nav3.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
+import com.lyf.compose.router.AnimatableRouter
+import com.lyf.compose.router.AnimateAsStateRouter
 import com.lyf.compose.router.AnimateContentSizeRouter
 import com.lyf.compose.router.AnimatedContentRouter
 import com.lyf.compose.router.AnimatedVisibilityRouter
@@ -53,6 +55,12 @@ fun CreateScreen() {
                     }
                     if (index == 2) {
                         navigator.navigate(AnimatedContentRouter)
+                    }
+                    if (index == 3) {
+                        navigator.navigate(AnimateAsStateRouter)
+                    }
+                    if (index == 4) {
+                        navigator.navigate(AnimatableRouter)
                     }
                 }) {
                     Row(
