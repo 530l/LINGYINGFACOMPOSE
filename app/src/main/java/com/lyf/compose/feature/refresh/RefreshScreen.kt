@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -19,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.king.ultraswiperefresh.NestedScrollMode
 import com.king.ultraswiperefresh.UltraSwipeRefresh
@@ -36,11 +36,16 @@ import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import com.lyf.compose.core.ui.components.text.AppText
 import kotlinx.coroutines.launch
 
-
+/**
+ * 下拉刷新 + 上拉加载 示例
+ * todo viewmodel 的生命周期比 composable 更长，
+ *      compose函数退出了，但是 viewmodel 还在，
+ */
 @Composable
-fun RefreshScreen(viewModel: RefreshViewModel = viewModel()) {
+fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    // 使用 collectAsStateWithLifecycle 可在生命周期可见时订阅，避免后台订阅导致的泄漏
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         if (uiState.articles.isEmpty()) {
@@ -84,7 +89,6 @@ fun RefreshScreen(viewModel: RefreshViewModel = viewModel()) {
         }
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,33 +176,55 @@ private fun NetworkListDemoContent(
             when (loadMoreState) {
                 LoadMoreState.Loading -> {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            androidx.compose.material3.Text(text = "加载中...", color = Color(0xFF999999), modifier = Modifier.padding(12.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.Text(
+                                text = "加载中...",
+                                color = Color(0xFF999999),
+                                modifier = Modifier.padding(12.dp)
+                            )
                         }
                     }
                 }
+
                 LoadMoreState.NoMore -> {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            androidx.compose.material3.Text(text = "没有更多数据了", color = Color(0xFF999999), modifier = Modifier.padding(vertical = 16.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.Text(
+                                text = "没有更多数据了",
+                                color = Color(0xFF999999),
+                                modifier = Modifier.padding(vertical = 16.dp)
+                            )
                         }
                     }
                 }
+
                 LoadMoreState.Error -> {
                     item {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onLoadMore() }, contentAlignment = Alignment.Center) {
-                            androidx.compose.material3.Text(text = "加载失败，点击重试", color = Color(0xFF999999), modifier = Modifier.padding(vertical = 16.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onLoadMore() }, contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.Text(
+                                text = "加载失败，点击重试",
+                                color = Color(0xFF999999),
+                                modifier = Modifier.padding(vertical = 16.dp)
+                            )
                         }
                     }
                 }
+
                 else -> {}
             }
         }
     }
 }
-
 
 
 @Composable

@@ -13,9 +13,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.hjq.toast.Toaster
 import com.lyf.compose.core.data.session.SessionManager
@@ -118,8 +120,15 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
 
     CompositionLocalProvider(LocalNavigator provides navigator) {
         NavDisplay(
+            entryDecorators = listOf(
+                // 先添加状态保存的默认装饰器（支持 SavedStateHandle）
+                rememberSaveableStateHolderNavEntryDecorator(),
+                // 再添加 view model store 装饰器
+                // 注意必须引入 androidx.lifecycle:lifecycle-viewmodel-navigation3 依赖库
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
             backStack = backStack,
-            // NavDisplay.onBack：用于你自己在 UI 内部触发的“返回”
+            // NavDisplay.onBack：用于你自己在 UI 内部触发的“返回"
             // （比如 TopBar 返回按钮）
             onBack = { handleBack() },
             entryProvider = { key ->
