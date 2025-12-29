@@ -1,25 +1,39 @@
 package com.lyf.compose.core.data.network
 
-/**
- * 网络请求结果包装类
- * @param T 数据类型
- */
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
 sealed interface NetworkResult<out T> {
-    /**
-     * 加载中状态
-     */
     data object Loading : NetworkResult<Nothing>
-
-    /**
-     * 成功状态，包含数据
-     * @param T 数据类型
-     * @param data 成功返回的数据
-     */
     data class Success<T>(val data: T) : NetworkResult<T>
-
-    /**
-     * 错误状态，包含异常信息
-     * @param exception 异常对象
-     */
     data class Error(val exception: Throwable) : NetworkResult<Nothing>
+}
+
+inline fun <T, R> NetworkResult<T>.fold(
+    onSuccess: (T) -> R,
+    onError: (Throwable) -> R,
+    onLoading: () -> R = { error("Unexpected Loading state") }
+): R = when (this) {
+    is NetworkResult.Loading -> onLoading()
+    is NetworkResult.Success -> onSuccess(data)
+    is NetworkResult.Error -> onError(exception)
+}
+
+
+inline fun <T> Flow<NetworkResult<T>>.launchCollect(
+    scope: CoroutineScope,
+    crossinline onLoading: () -> Unit = {},
+    crossinline onSuccess: (T) -> Unit,
+    crossinline onError: (Throwable) -> Unit = {},
+) = scope.launch {
+    //ollectLatest：若多次调用 requestXXXXX()，旧的收集会被取消，避免竞态问题。
+    collectLatest { result ->
+        when (result) {
+            is NetworkResult.Loading -> onLoading()
+            is NetworkResult.Success -> onSuccess(result.data)
+            is NetworkResult.Error -> onError(result.exception)
+        }
+    }
 }

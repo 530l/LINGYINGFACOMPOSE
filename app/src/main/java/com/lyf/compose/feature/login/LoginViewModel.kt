@@ -74,27 +74,6 @@ class LoginViewModel @Inject constructor(
         )
     }
 
-    fun loadHomeData() {
-        repository.requestHomeInitData().launchCollect(
-            scope = viewModelScope,
-            onLoading = {
-                _uiState.value = _uiState.value.copy(isLoading = true, errorMsg = "")
-            },
-            onSuccess = { data ->
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    banner = data.banners,
-                    hotKeys = data.hotKeys
-                )
-            },
-            onError = { error ->
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMsg = error.message ?: "加载首页数据失败"
-                )
-            }
-        )
-    }
 
     /**
      * 消费登录成功事件。
