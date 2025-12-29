@@ -1,4 +1,4 @@
-package com.lyf.compose.core.ui.components.loading
+package com.lyf.compose.feature.refresh.v
 
 import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.LinearEasing

@@ -34,7 +34,7 @@ import com.lyf.compose.core.theme.SpaceHorizontalXXLarge
 import com.lyf.compose.core.theme.SpacePaddingMedium
 import com.lyf.compose.core.theme.SpaceVerticalMedium
 import com.lyf.compose.core.state.LoadMoreState
-import com.lyf.compose.core.ui.components.loading.LoadMore
+import com.lyf.compose.feature.refresh.v.LoadMore
 
 /**
  * 刷新内容区域组件

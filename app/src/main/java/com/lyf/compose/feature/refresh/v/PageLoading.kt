@@ -1,4 +1,4 @@
-package com.lyf.compose.core.ui.components.loading
+package com.lyf.compose.feature.refresh.v
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.lyf.compose.core.ui.components.loading.MiLoadingMobile
+import com.lyf.compose.feature.refresh.v.MiLoadingMobile
 import com.lyf.compose.core.ui.components.text.AppText
 import com.lyf.compose.core.ui.components.text.TextSize
 import com.lyf.compose.core.ui.components.text.TextType

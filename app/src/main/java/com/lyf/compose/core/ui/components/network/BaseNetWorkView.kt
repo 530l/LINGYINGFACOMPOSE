@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.lyf.compose.core.ui.components.empty.EmptyNetwork
-import com.lyf.compose.core.ui.components.loading.PageLoading
+import com.lyf.compose.feature.refresh.v.PageLoading
 import com.lyf.compose.core.state.BaseNetWorkUiState
 
 /**

@@ -40,11 +40,13 @@ class RefreshViewModel @Inject constructor(
     fun refresh() = load(page = 0, isRefresh = true)
 
     fun loadMore() {
+        Timber.d("RefreshViewModel: loadMore called, hasMore=${_uiState.value.hasMore}, isLoadingMore=${_uiState.value.isLoadingMore}")
         if (!_uiState.value.hasMore) return
         load(page = _uiState.value.page + 1, isRefresh = false)
     }
 
     private fun load(page: Int, isRefresh: Boolean) {
+        Timber.d("RefreshViewModel: load(page=$page,isRefresh=$isRefresh) start")
         // 取消上一次未完成的请求（防止旧响应覆盖新状态）
         activeLoadJob?.cancel()
         activeLoadJob = viewModelScope.launch {
@@ -62,6 +64,7 @@ class RefreshViewModel @Inject constructor(
                 scope = viewModelScope,
                 onLoading = { /* 若 launchCollect 内部已处理 loading，此处可留空 */ },
                 onSuccess = { response: Article ->
+                    Timber.d("RefreshViewModel: load success page=${response.curPage} size=${response.datas.size}")
                     // 计算是否还有更多数据
                     val computedHasMore = when {
                         response.over -> false
@@ -78,6 +81,7 @@ class RefreshViewModel @Inject constructor(
                                 hasMore = computedHasMore
                             )
                         }
+                        Timber.d("RefreshViewModel: server returned same or older page, no new data")
                         return@launchCollect
                     }
 
@@ -98,6 +102,7 @@ class RefreshViewModel @Inject constructor(
                     }
                 },
                 onError = { error ->
+                    Timber.e(error, "RefreshViewModel: load error")
                     _uiState.update {
                         it.copy(
                             isRefreshing = false,

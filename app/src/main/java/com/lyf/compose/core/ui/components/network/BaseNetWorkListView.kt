@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import com.lyf.compose.core.state.BaseNetWorkListUiState
 import com.lyf.compose.core.ui.components.empty.EmptyData
 import com.lyf.compose.core.ui.components.empty.EmptyNetwork
-import com.lyf.compose.core.ui.components.loading.PageLoading
+import com.lyf.compose.feature.refresh.v.PageLoading
 
 /**
  * 基础网络列表视图组件

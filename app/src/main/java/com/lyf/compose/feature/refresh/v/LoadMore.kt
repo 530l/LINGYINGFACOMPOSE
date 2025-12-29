@@ -1,4 +1,4 @@
-package com.lyf.compose.core.ui.components.loading
+package com.lyf.compose.feature.refresh.v
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,8 +31,6 @@ import com.lyf.compose.core.state.LoadMoreState
 import com.lyf.compose.core.theme.AppTheme
 
 /**
- * 订单列表加载更多组件
- *
  * 用于显示列表底部的加载状态，支持以下几种状态：
  * 1. 可上拉加载：显示上拉加载更多提示
  * 2. 加载中：显示加载动画和提示文本
