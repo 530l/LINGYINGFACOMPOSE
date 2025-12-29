@@ -61,10 +61,6 @@ fun <T> SwipeRefreshBox(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.align(Alignment.Center),
-//                    color = Color(0xFFFF8B80)
-//                )
                 PageLoading(modifier = Modifier.align(Alignment.Center))
             }
         } else {
