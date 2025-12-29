@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyf.compose.core.data.bean.ArticleBean
+import com.lyf.compose.core.state.LoadMoreState
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import com.lyf.compose.feature.refresh.v.SwipeRefreshBox
 import kotlinx.coroutines.launch
@@ -41,11 +42,18 @@ fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
 
+        // 把 uiState 映射为 LoadMoreState 并传入 SwipeRefreshBox
+        val loadMoreState = when {
+            uiState.isLoadingMore -> LoadMoreState.Loading
+            uiState.errorMessage != null && uiState.articles.isNotEmpty() && !uiState.isRefreshing -> LoadMoreState.Error
+            !uiState.hasMore -> LoadMoreState.NoMore
+            else -> LoadMoreState.PullToLoad
+        }
+
         SwipeRefreshBox(
             items = uiState.articles as List<ArticleBean>?,
             isRefreshing = uiState.isRefreshing,
-            isLoading = uiState.isLoadingMore,
-            isFinishing = !uiState.hasMore,
+            loadMoreState = loadMoreState,
             onRefresh = {
                 Timber.d("RefreshScreen: onRefresh invoked from UI")
                 coroutineScope.launch { viewModel.refresh() }
