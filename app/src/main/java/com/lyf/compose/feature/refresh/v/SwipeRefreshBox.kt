@@ -37,19 +37,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clipToBounds
 import com.lyf.compose.core.state.LoadMoreState
 import com.lyf.compose.core.theme.SpaceHorizontalMedium
 import com.lyf.compose.core.theme.SpaceHorizontalXXLarge
 import com.lyf.compose.core.theme.SpaceVerticalMedium
 import kotlinx.coroutines.delay
-import kotlin.Long
 
 /**
  * 自定义下拉刷新 & 加载更多容器（支持列表 / 网格）
@@ -70,16 +70,17 @@ import kotlin.Long
  * @param key 唯一标识生成函数（用于提升性能）
  * @param contentType 内容类型（用于跳过 recomposition）
  * @param columnItemContent 列表项内容构建器（当 isGrid = false 时使用）
+ * @param indicatorMinVisibleTime 指示器至少可见的毫秒数（默认 0，立即隐藏）
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun <T> SwipeRefreshBox(
+    modifier: Modifier = Modifier,
     items: List<T> = emptyList(),
     isRefreshing: Boolean,
     loadMoreState: LoadMoreState,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
-    modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     isGrid: Boolean = false,
     gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
@@ -90,6 +91,7 @@ fun <T> SwipeRefreshBox(
     key: ((index: Int, item: T) -> Any)? = null,
     contentType: (index: Int, item: T) -> Any? = { _, _ -> null },
     columnItemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit = { _, _ -> /* no-op */ },
+    indicatorMinVisibleTime: Long = 500L
 ) {
     // 判断是否有数据
     val hasData = items.isNotEmpty()
@@ -116,8 +118,50 @@ fun <T> SwipeRefreshBox(
         }
 
         else -> {
-            // 创建下拉刷新状态控制器
-            val pullRefreshState = rememberPullRefreshState(isRefreshing, onRefresh)
+            // 确保下拉刷新指示器至少显示 indicatorMinVisibleTime 毫秒，
+            // 避免因刷新过快导致指示器“闪现”而影响用户体验。
+            var visibleRefreshing by remember { mutableStateOf(isRefreshing) }
+            var indicatorShownAt by remember { mutableStateOf<Long?>(null) }
+
+            // displayRefreshing 用于驱动 PullRefreshIndicator 和 PullRefreshState 的 refreshing 状态。
+            // 它为 true 的条件是：外部正在刷新（isRefreshing == true）
+            // 或者本地仍处于最小可见时间的延迟隐藏阶段（visibleRefreshing == true）。
+            val displayRefreshing by remember { derivedStateOf { isRefreshing || visibleRefreshing } }
+
+            // 监听 isRefreshing 变化，管理指示器的显示/隐藏生命周期：
+            // - 当 isRefreshing 变为 true 时，记录首次显示时间并确保 visibleRefreshing = true；
+            // - 当 isRefreshing 变为 false 时，计算已显示时长，若不足 indicatorMinVisibleTime，
+            //   则延迟剩余时间后再将 visibleRefreshing 设为 false，从而保证最小可见时间。
+            LaunchedEffect(isRefreshing, indicatorMinVisibleTime) {
+                if (isRefreshing) {
+                    if (indicatorShownAt == null) {
+                        indicatorShownAt = System.currentTimeMillis()
+                    }
+                    visibleRefreshing = true
+                } else {
+                    val shownAt = indicatorShownAt ?: System.currentTimeMillis()
+                    val elapsed = System.currentTimeMillis() - shownAt
+                    val remaining = (indicatorMinVisibleTime - elapsed).coerceAtLeast(0L)
+                    if (remaining > 0L) {
+                        delay(remaining)
+
+                    }
+                    visibleRefreshing = false
+                    indicatorShownAt = null
+                }
+            }
+
+            // 包装原始 onRefresh 回调：
+            // 当用户通过下拉手势触发刷新时，立即标记指示器已显示（visibleRefreshing = true），
+            // 并记录显示起始时间，确保即使外部 isRefreshing 延迟更新，指示器也能及时响应。
+            val wrappedOnRefresh = {
+                visibleRefreshing = true
+                indicatorShownAt = System.currentTimeMillis()
+                onRefresh()
+            }
+
+            // 创建下拉刷新状态控制器，使用 displayRefreshing 保持 indicator 与手势状态的一致性
+            val pullRefreshState = rememberPullRefreshState(displayRefreshing, wrappedOnRefresh)
 
             // 默认加载更多触发逻辑：滑动到倒数第3项时触发
             val actualShouldTriggerLoadMore =
@@ -172,9 +216,9 @@ fun <T> SwipeRefreshBox(
                     )
                 }
 
-                // 下拉刷新指示器（圆形进度条）
+                // 下拉刷新指示器（圆形进度条）——使用 visibleRefreshing 来控制可见时长
                 PullRefreshIndicator(
-                    refreshing = isRefreshing,
+                    refreshing = displayRefreshing,
                     state = pullRefreshState,
                     modifier = Modifier.align(Alignment.TopCenter),
                     scale = true // 支持缩放动画
