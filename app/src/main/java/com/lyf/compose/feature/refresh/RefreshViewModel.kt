@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.lyf.compose.core.data.bean.Article
 import com.lyf.compose.core.data.bean.ArticleBean
 import com.lyf.compose.core.data.network.NetworkResult
-import com.lyf.compose.core.data.network.fold
+import com.lyf.compose.core.data.network.call
 import com.lyf.compose.core.data.repositories.AtmobRepositories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -37,31 +37,73 @@ class RefreshViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RefreshUiState())
     val uiState: StateFlow<RefreshUiState> = _uiState.asStateFlow()
 
-
-    fun refresh() = load(page = 0, isRefresh = true)
-
-    fun loadMore() {
-        Timber.d("loadMore called, hasMore=${_uiState.value.hasMore}, isLoadingMore=${_uiState.value.isLoadingMore}")
-        if (!_uiState.value.hasMore || _uiState.value.isLoadingMore) return
-        load(page = _uiState.value.page + 1, isRefresh = false)
+    fun onRefresh() {
+        if (_uiState.value.isRefreshing || _uiState.value.isLoadingMore) return
+        _uiState.update {
+            it.copy(
+                page = 0,
+                isRefreshing = true,
+                isLoadingMore = false,
+                errorMessage = null,
+            )
+        }
+        Timber.d("🔄 Trigger refresh, current page: ${_uiState.value.page}")
+        load()
     }
 
-    private fun load(page: Int, isRefresh: Boolean) {
-        Timber.d("load(page=$page, isRefresh=$isRefresh) start")
+    fun onLoadMore() {
+        Timber.d("🔽 Trigger load more, next page-----------")
+        val state = _uiState.value
+        // 只有在可加载且未加载中时才触发
+        if (!state.hasMore || state.isLoadingMore || state.isRefreshing) return
+        _uiState.update {
+            it.copy(
+                isLoadingMore = true,
+                isRefreshing = false,
+                page = state.page + 1,
+                errorMessage = null
+            )
+        }
+        Timber.d("🔽 Trigger load more, next page: ${state.page}")
+        load()
+    }
+
+
+    /**
+     * 判断是否应该触发加载更多
+     *
+     * @param lastIndex 当前可见的最后一项索引（从0开始）
+     * @param totalCount 列表总项数
+     * @return true 表示应触发 onLoadMore()
+     */
+    fun shouldTriggerLoadMore(lastIndex: Int, totalCount: Int): Boolean {
+        val state = _uiState.value
+        // 必须满足：有更多数据可加载 + 当前未在刷新/加载中 + 列表非空 + 滑动接近底部
+        return totalCount > 0 &&
+                state.hasMore &&
+                !state.isRefreshing &&
+                !state.isLoadingMore &&
+                lastIndex >= totalCount - 3
+    }
+
+
+    private fun load() {
         viewModelScope.launch {
             ///因为：
             //safeApiCall 捕获所有异常 → 转为 Error
             //Flow 一定 emit Success 或 Error → .first() 安全
             //无需 try-catch / runCatching
+            val page = _uiState.value.page
+            val isRefresh = _uiState.value.isRefreshing
             updateLoading(isRefreshing = isRefresh)
-            val result = repository.requestArticleList(page)
+            repository.requestArticleList(page)
                 .filter { it !is NetworkResult.Loading }
-                .first()
-            // ✅ 使用 fold，无需 else，无需处理 Loading
-            result.fold(
-                onSuccess = { response -> handleSuccess(response, isRefresh) },
-                onError = { error -> handleError(error, isRefresh) }
-            )
+                .first().call(
+                    onSuccess = { response ->
+                        handleSuccess(response, isRefresh)
+                    },
+                    onError = { error -> handleError(error, isRefresh) }
+                )
         }
     }
 
@@ -78,7 +120,6 @@ class RefreshViewModel @Inject constructor(
     }
 
     private fun handleSuccess(response: Article, isRefresh: Boolean) {
-        Timber.d("load success page=${response.curPage} size=${response.datas.size}")
 
         val computedHasMore = when {
             response.over -> false
@@ -149,7 +190,7 @@ class RefreshViewModel @Inject constructor(
             var anyError: Throwable? = null
 
             for ((page, result) in results) {
-                result.fold(
+                result.call(
                     onSuccess = { response ->
                         allArticles.addAll(response.datas)
                     },

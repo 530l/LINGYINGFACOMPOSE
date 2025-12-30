@@ -1,13 +1,28 @@
 package com.lyf.compose.feature.refresh
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -16,13 +31,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyf.compose.core.data.bean.ArticleBean
 import com.lyf.compose.core.state.LoadMoreState
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
+import com.lyf.compose.core.ui.components.appbar.CenterTopAppBar
+import com.lyf.compose.core.ui.components.text.AppText
 import com.lyf.compose.feature.refresh.v.SwipeRefreshBox
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-/**
- * 使用项目内统一的 SwipeRefreshBox 组件替换原有的 UltraSwipeRefresh 实现
- */
+
 @Composable
 fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
 
@@ -30,56 +45,134 @@ fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         if (uiState.articles.isEmpty()) {
-            viewModel.refresh()
+            viewModel.onRefresh()
         }
     }
 
-    // 如果后续需要可复用 loadMore 状态映射，
-    // 可在此处添加；当前 SwipeRefreshBox 直接使用 isLoading/isFinishing
-    AppScaffold(titleText = "文章列表") {
-        // 直接根据状态渲染，避免 AnimatedContent 等容器拦截手势
-        // 使用 SwipeRefreshBox（与 HomeScreen 一致的调用方式）
-        val listState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
+    var selectedTab by remember { mutableIntStateOf(0) }
 
-        // 把 uiState 映射为 LoadMoreState 并传入 SwipeRefreshBox
-        val loadMoreState = when {
-            uiState.isLoadingMore -> LoadMoreState.Loading
-            uiState.errorMessage != null && uiState.articles.isNotEmpty() && !uiState.isRefreshing -> LoadMoreState.Error
-            !uiState.hasMore -> LoadMoreState.NoMore
-            else -> LoadMoreState.PullToLoad
+    AppScaffold(
+        titleText = null,
+        topBar = {
+            Column {
+                CenterTopAppBar(titleText = "文章列表", showBackIcon = false)
+                TabRow(
+                    selectedTabIndex = selectedTab,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ) {
+                    Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
+                        Text(
+                            text = "List",
+                            color = if (selectedTab == 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
+                        Text(
+                            text = "Grid",
+                            color = if (selectedTab == 1) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
         }
-
-        SwipeRefreshBox(
-            items = uiState.articles as List<ArticleBean>?,
-            isRefreshing = uiState.isRefreshing,
-            loadMoreState = loadMoreState,
-            onRefresh = {
-                Timber.d("RefreshScreen: onRefresh invoked from UI")
-                coroutineScope.launch { viewModel.refresh() }
-            },
-            onLoad = {
-                Timber.d("RefreshScreen: onLoad invoked from UI")
-                coroutineScope.launch { viewModel.loadMore() }
-            },
-            modifier = Modifier.fillMaxSize(),
-            listState = listState,
-            contentPadding = remember { androidx.compose.foundation.layout.PaddingValues(0.dp) },
-            key = { _, item -> item.id },
-            contentType = { _, _ -> null }
-        ) { _, item ->
-            // item content: 和原来保持一致的展示
-            GoodsListItem(goods = item)
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (selectedTab == 0) {
+                NetworkListExample(viewModel = viewModel)
+            } else {
+                NetworkGriltExample(viewModel = viewModel)
+            }
         }
     }
 }
 
+@Composable
+private fun NetworkListExample(viewModel: RefreshViewModel) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val loadMoreState = when {
+        uiState.isLoadingMore -> LoadMoreState.Loading
+        uiState.errorMessage != null && uiState.articles.isNotEmpty() && !uiState.isRefreshing -> LoadMoreState.Error
+        !uiState.hasMore -> LoadMoreState.NoMore
+        else -> LoadMoreState.PullToLoad
+    }
+
+    SwipeRefreshBox(
+        items = uiState.articles,
+        isRefreshing = uiState.isRefreshing,
+        loadMoreState = loadMoreState,
+        onRefresh = {
+            coroutineScope.launch { viewModel.onRefresh() }
+        },
+        onLoadMore = {
+            coroutineScope.launch { viewModel.onLoadMore() }
+        },
+        modifier = Modifier.fillMaxSize(),
+        listState = listState,
+        shouldTriggerLoadMore = viewModel::shouldTriggerLoadMore,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+        key = { _, item -> item.id },
+        columnItemContent = { index, item ->
+            GoodsListItem(index = index, goods = item)
+        }
+    )
+}
+
+
+@Composable
+private fun NetworkGriltExample(viewModel: RefreshViewModel) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val gridState = rememberLazyStaggeredGridState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val loadMoreState = when {
+        uiState.isLoadingMore -> LoadMoreState.Loading
+        uiState.errorMessage != null && uiState.articles.isNotEmpty() && !uiState.isRefreshing -> LoadMoreState.Error
+        !uiState.hasMore -> LoadMoreState.NoMore
+        else -> LoadMoreState.PullToLoad
+    }
+
+    SwipeRefreshBox(
+        items = uiState.articles,
+        isRefreshing = uiState.isRefreshing,
+        loadMoreState = loadMoreState,
+        onRefresh = {
+            coroutineScope.launch { viewModel.onRefresh() }
+        },
+        onLoadMore = {
+            coroutineScope.launch { viewModel.onLoadMore() }
+        },
+        modifier = Modifier.fillMaxSize(),
+        isGrid = true,
+        gridState = gridState,
+        contentPadding = PaddingValues(8.dp),
+        shouldTriggerLoadMore = viewModel::shouldTriggerLoadMore,
+        key = { _, item -> item.id },
+        gridItemContent = { index, item ->
+            Card(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .height(120.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                GoodsListItem(index = index, goods = item)
+            }
+        },
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GoodsListItem(goods: ArticleBean) {
-    // 复用原来的展示
+private fun GoodsListItem(index: Int, goods: ArticleBean) {
     androidx.compose.material3.ListItem(
         modifier = Modifier.clip(com.lyf.compose.core.theme.ShapeMedium),
-        headlineContent = { com.lyf.compose.core.ui.components.text.AppText(text = goods.title.ifBlank { "未命名商品" }) },
+        headlineContent = {
+            AppText(
+                text = " ${goods.title}----$index ",
+            )
+        },
     )
 }

@@ -34,7 +34,9 @@ interface AtmobApi {
 
     // WanAndroid 分页文章
     @GET("/article/list/{page}/json")
-    suspend fun getArticleList(@Path("page") page: Int): NetworkResponse<Article>
+    suspend fun getArticleList(
+        @Path("page") page: Int
+    ): NetworkResponse<Article>
 
 
 }

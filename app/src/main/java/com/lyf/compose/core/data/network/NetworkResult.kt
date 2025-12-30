@@ -11,7 +11,7 @@ sealed interface NetworkResult<out T> {
     data class Error(val exception: Throwable) : NetworkResult<Nothing>
 }
 
-inline fun <T, R> NetworkResult<T>.fold(
+inline fun <T, R> NetworkResult<T>.call(
     onSuccess: (T) -> R,
     onError: (Throwable) -> R,
     onLoading: () -> R = { error("Unexpected Loading state") }
