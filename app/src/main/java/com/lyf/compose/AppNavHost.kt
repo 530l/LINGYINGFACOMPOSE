@@ -13,68 +13,112 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.hjq.toast.Toaster
 import com.lyf.compose.core.data.session.SessionManager
-import com.lyf.compose.core.nav3.LocalNavigator
-import com.lyf.compose.core.nav3.NavRegistry
-import com.lyf.compose.core.nav3.createNavigator
-import com.lyf.compose.core.nav3.navigateRootNonEmpty
 import com.lyf.compose.feature.splash.WelcomeScreen
 import com.lyf.compose.router.HomeScreenRouter
+import com.lyf.compose.router.LocalNavigator
 import com.lyf.compose.router.LoginRouter
-import com.lyf.compose.router.RouterRegistrations
+import com.lyf.compose.router.MultiStackNavigator
+import com.lyf.compose.router.NavRegistry
+import com.lyf.compose.router.NavigationState
 import com.lyf.compose.router.SplashRouter
+import com.lyf.compose.router.rememberNavigationState
+import com.lyf.compose.router.toEntries
 import kotlinx.coroutines.delay
-
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavHost(startDestination: NavKey = SplashRouter) {
-    val backStack = rememberNavBackStack(startDestination)
-    val context = LocalContext.current
+    // 1. 定义顶级页面（Tab/Root）
+    val topLevelKeys = remember { setOf(SplashRouter, LoginRouter, HomeScreenRouter) }
 
-    // NavDisplay要求返回栈非空。
-    if (backStack.isEmpty()) {
-        // 如果启动目的地就是 Login 或者 Splash（欢迎页），直接退出应用而不是临时添加，
-        // 以避免出现空栈时 NavDisplay 抛异常的同时在逻辑上你希望关闭应用的情形。
-        if (startDestination == LoginRouter || startDestination == SplashRouter) {
-            (context as? Activity)?.finish()
-            return
-        } else {
-            backStack.add(startDestination)
-        }
+    // 2. 初始化状态和控制器
+    val navState = rememberNavigationState(startKey = startDestination, topLevelKeys = topLevelKeys)
+    val navigator = remember(navState) { MultiStackNavigator(navState) }
+
+    // 3. Splash 状态管理
+    var splashFinished by remember { mutableStateOf(false) }
+
+    // 4. 处理全局逻辑（登录跳转、Splash）
+    HandleAuthNavigation(navState, navigator, splashFinished)
+
+    // 5. 处理返回键逻辑
+    val handleBack = rememberBackPressHandler(navState, navigator)
+
+    // 6. 渲染导航
+    CompositionLocalProvider(LocalNavigator provides navigator) {
+        NavDisplay(
+            entries = navState.toEntries { key ->
+                when (key) {
+                    is SplashRouter -> NavEntry(key) {
+                        WelcomeScreen(
+                            navigateToNext = { splashFinished = true }
+                        )
+                    }
+                    else -> NavRegistry.createEntry(key)
+                }
+            },
+            onBack = handleBack
+        )
     }
+}
 
-    // 注册应用内所有模块路由（集中式注册在 router 包）
-    RouterRegistrations.registerAll()
-
-    // 全局登录态：token 变化会驱动自动分流
+/**
+ * 处理认证和 Splash 跳转逻辑
+ */
+@Composable
+private fun HandleAuthNavigation(
+    navState: NavigationState,
+    navigator: MultiStackNavigator,
+    splashFinished: Boolean
+) {
     val token by SessionManager.tokenFlow.collectAsState()
     val isLoggedIn = token.isNotBlank()
 
-    //是否已经播放完 Splash 动画。
-    var splashFinished by remember { mutableStateOf(false) }
+    // 监听登录状态和当前页面的变化
+    LaunchedEffect(isLoggedIn, splashFinished, navState.currentKey) {
+        val current = navState.currentKey
 
-    // 登录态分流：Splash 未结束时锁定 Splash；结束后跳转到 Home/Login
-    LaunchedEffect(isLoggedIn, splashFinished) {
-        val current = backStack.lastOrNull()
+        // 1. Splash 逻辑
+        if (current == SplashRouter) {
+            if (splashFinished) {
+                // Splash 结束，根据登录态跳转
+                navigator.navigateRoot(if (isLoggedIn) HomeScreenRouter else LoginRouter)
+            }
+            return@LaunchedEffect
+        }
 
-        // 只在“仍停留在 Splash 且 Splash 未结束”时阻断跳转，保证首次启动 Splash 一定完整展示。
-        // 一旦离开 Splash（比如已经进入 Home/Mine），后续 token 变化（退出登录/401）必须立即生效。
-        if (current == SplashRouter && !splashFinished) return@LaunchedEffect
+        // 2. 登出/Session过期逻辑：如果在需要登录的页面但未登录 -> 去登录页
+        if (!isLoggedIn && NavRegistry.requiresLogin(current)) {
+            navigator.navigateRoot(LoginRouter)
+            return@LaunchedEffect
+        }
 
-        // token 变化后强制回到对应根页面，避免出现“Login 闪一下又被覆盖回去”的情况。
-        backStack.navigateRootNonEmpty(if (isLoggedIn) HomeScreenRouter else LoginRouter)
+        // 3. 登录成功逻辑：如果在登录页但已登录 -> 去主页
+        if (isLoggedIn && current == LoginRouter) {
+            navigator.navigateRoot(HomeScreenRouter)
+            return@LaunchedEffect
+        }
     }
+}
 
-    // =============== 返回键：主页双击返回回到桌面 ===============
+/**
+ * 处理物理返回键逻辑
+ * @return 返回处理函数，供 NavDisplay 使用
+ */
+@Composable
+private fun rememberBackPressHandler(
+    navState: NavigationState,
+    navigator: MultiStackNavigator
+): () -> Unit {
+    val context = LocalContext.current
     var backPressedState by remember { mutableStateOf(false) }
+
+    // 双击返回计时器
     LaunchedEffect(backPressedState) {
         if (backPressedState) {
             delay(2000)
@@ -82,70 +126,50 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
         }
     }
 
-    fun handleBack() {
-        val isHome = backStack.lastOrNull() == HomeScreenRouter
-        when {
-            // Home 第二次按返回：回到桌面
-            isHome && backPressedState -> {
-                context.startActivity(
-                    Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            }
+    val handleBack = remember(navState, navigator, backPressedState) {
+        {
+            val currentKey = navState.currentKey
+            val isHome = currentKey == HomeScreenRouter
+            val isLogin = currentKey == LoginRouter
 
-            // Home 第一次按返回：提示
-            isHome -> {
-                backPressedState = true
-                Toaster.show("再按一次退出应用")
-            }
+            when {
+                // Home 第二次按返回：回到桌面
+                isHome && backPressedState -> {
+                    context.startActivity(
+                        Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_HOME)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                }
 
-            // 其它页面：正常返回
-            else -> backStack.removeLastOrNull()
+                // Home 第一次按返回：提示
+                isHome -> {
+                    backPressedState = true
+                    Toaster.show("再按一次退出应用")
+                }
+
+                // Login 页面按返回：退出应用
+                isLogin -> {
+                    (context as? Activity)?.finish()
+                }
+
+                // 其它页面：正常返回
+                else -> {
+                    // 如果是顶级栈的最后一个元素，且当前就在该顶级页面，则退出应用
+                    if (navState.topLevelStack.size <= 1 && currentKey == navState.currentTopLevelKey) {
+                        (context as? Activity)?.finish()
+                    } else {
+                        navigator.pop()
+                    }
+                }
+            }
+            Unit
         }
     }
 
-    // 系统返回键（物理/手势）优先走这里
-    BackHandler(enabled = true) { handleBack() }
+    // 注册系统返回键回调
+    BackHandler(enabled = true, onBack = handleBack)
 
-    //创建一个由导航返回堆栈支持的导航器，并通过CompositionLocal提供它
-    //其实就是抽取行为，通过回调的形式，入栈 和出栈
-    val navigator = remember(backStack) {
-        createNavigator(
-            navigateAdd = { backStack.add(it) },
-            navigateRootNonEmpty = { backStack.navigateRootNonEmpty(it) },
-            popLast = { backStack.removeLastOrNull() }
-        )
-    }
-
-    CompositionLocalProvider(LocalNavigator provides navigator) {
-        NavDisplay(
-            entryDecorators = listOf(
-                // 先添加状态保存的默认装饰器（支持 SavedStateHandle）
-                rememberSaveableStateHolderNavEntryDecorator(),
-                // 再添加 view model store 装饰器
-                // 注意必须引入 androidx.lifecycle:lifecycle-viewmodel-navigation3 依赖库
-                rememberViewModelStoreNavEntryDecorator(),
-            ),
-            backStack = backStack,
-            // NavDisplay.onBack：用于你自己在 UI 内部触发的“返回"
-            // （比如 TopBar 返回按钮）
-            onBack = { handleBack() },
-            entryProvider = { key ->
-                when (key) {
-                    is SplashRouter -> NavEntry(key) {
-                        WelcomeScreen(
-                            navigateToNext = {
-                                // Splash 动画结束：只标记完成。
-                                // 具体跳转到 Home/Login 由 LaunchedEffect(isLoggedIn, splashFinished) 统一分流。
-                                splashFinished = true
-                            }
-                        )
-                    }
-
-                    else -> NavRegistry.createEntry(key)
-                }
-            }
-        )
-    }
+    return handleBack
 }
+

@@ -6,10 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.lyf.compose.core.theme.AppTheme
-import com.lyf.compose.feature.nav3.conditional.ConditionalNav3
+import com.lyf.compose.router.RouterRegistrations
 import dagger.hilt.android.AndroidEntryPoint
+
 // Compose 使用 Kotlin 编译器插件，首次运行需要：
 // 编译 Compose 运行时代码
 // 生成和缓存 Compose 类
@@ -18,9 +18,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 注册应用内所有模块路由
+        RouterRegistrations.registerAll()
+
         enableEdgeToEdge()
         setContent {
-            AppTheme { ConditionalNav3() }
+            AppTheme { AppNavHost() }
         }
     }
 }

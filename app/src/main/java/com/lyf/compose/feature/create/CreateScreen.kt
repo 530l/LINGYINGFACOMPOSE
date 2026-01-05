@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
-import com.lyf.compose.core.nav3.LocalNavigator
+import com.lyf.compose.router.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import com.lyf.compose.router.AnimatableRouter
 import com.lyf.compose.router.AnimateAsStateRouter

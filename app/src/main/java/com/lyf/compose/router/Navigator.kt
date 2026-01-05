@@ -1,4 +1,4 @@
-package com.lyf.compose.core.nav3
+package com.lyf.compose.router
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation3.runtime.NavKey
@@ -17,17 +17,3 @@ interface Navigator {
 val LocalNavigator = staticCompositionLocalOf<Navigator> {
     error("No Navigator provided")
 }
-
-fun createNavigator(
-    // 入栈
-    navigateAdd: (NavKey) -> Unit,
-    // 替换栈顶
-    navigateRootNonEmpty: (NavKey) -> Unit,
-    // 出栈
-    popLast: () -> Unit
-): Navigator = object : Navigator {
-    override fun navigate(key: NavKey) = navigateAdd(key)
-    override fun navigateRoot(key: NavKey) = navigateRootNonEmpty(key)
-    override fun pop() = popLast()
-}
-

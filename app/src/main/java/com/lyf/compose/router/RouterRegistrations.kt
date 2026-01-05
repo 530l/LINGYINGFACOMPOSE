@@ -1,6 +1,5 @@
 package com.lyf.compose.router
 
-import com.lyf.compose.core.nav3.NavRegistry
 import com.lyf.compose.feature.HomeScreen
 import com.lyf.compose.feature.animated.AnimatableScreen
 import com.lyf.compose.feature.animated.AnimateAsStateScreen
@@ -19,7 +18,7 @@ import com.lyf.compose.feature.refresh.RefreshScreen
  */
 object RouterRegistrations {
     fun registerAll() {
-        NavRegistry.register(HomeScreenRouter::class) { _ ->
+        NavRegistry.register(HomeScreenRouter::class, requiresLogin = true) { _ ->
             HomeScreen()
         }
         NavRegistry.register(LoginRouter::class) { _ ->

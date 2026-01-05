@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lyf.compose.core.nav3.LocalNavigator
+import com.lyf.compose.router.LocalNavigator
 import com.lyf.compose.core.theme.BgContentLight
 import com.lyf.compose.core.theme.BgWhiteLight
 import com.lyf.compose.core.theme.PrimaryLight
