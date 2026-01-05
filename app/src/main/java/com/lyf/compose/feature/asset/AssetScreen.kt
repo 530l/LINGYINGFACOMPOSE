@@ -24,14 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lyf.compose.router.LocalNavigator
+import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.theme.BgContentLight
 import com.lyf.compose.core.theme.BgWhiteLight
 import com.lyf.compose.core.theme.PrimaryLight
 import com.lyf.compose.core.theme.ShapeLarge
 import com.lyf.compose.core.theme.TextPrimaryLight
 import com.lyf.compose.core.theme.TextWhite
-import com.lyf.compose.router.RefreshRouter
+import com.lyf.compose.nav.RefreshRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

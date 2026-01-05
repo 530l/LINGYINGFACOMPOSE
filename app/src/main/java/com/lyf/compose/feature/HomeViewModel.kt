@@ -30,47 +30,4 @@ class HomeViewModel : ViewModel() {
     )
     val homeTabs: StateFlow<List<HomeTab>> = _homeTabs
 
-    // 如果后续确实需要从网络/配置下发 Tab，可在这里异步刷新 _homeTabs，
-    // 但不要为了“模拟加载”而人为 delay（会导致首屏抖动和卡顿感）。
-
-    ///因为：
-    //safeApiCall 捕获所有异常 → 转为 Error  ///Flow 一定 emit Success 或 Error → .first() 安全  ////无需 try-catch / runCatching
-
-//    fun loadMultiplePages() {
-//        viewModelScope.launch {
-//            updateLoading(isRefreshing = true)
-//            val pages = listOf(0, 1, 2)
-//
-//            val results = pages.map { page ->
-//                async {
-//                    val result = repository.requestArticleList(page)
-//                        .filter { it !is NetworkResult.Loading }
-//                        .first()
-//                    Pair(page, result)
-//                }
-//            }.awaitAll()
-//
-//            val allArticles = mutableListOf<ArticleBean>()
-//            var anyError: Throwable? = null
-//
-//            for ((page, result) in results) {
-//                result.call(
-//                    onSuccess = { response ->
-//                        allArticles.addAll(response.datas)
-//                    },
-//                    onError = { error ->
-//                        Timber.e(error, "Page $page failed")
-//                        if (anyError == null) anyError = error
-//                    }
-//                )
-//            }
-//            _uiState.update {
-//                it.copy(
-//                    isRefreshing = false,
-//                    articles = allArticles,
-//                    errorMessage = anyError?.message ?: ""
-//                )
-//            }
-//        }
-//    }
 }

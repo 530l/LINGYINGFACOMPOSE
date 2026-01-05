@@ -25,13 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
-import com.lyf.compose.router.LocalNavigator
+import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
-import com.lyf.compose.router.AnimatableRouter
-import com.lyf.compose.router.AnimateAsStateRouter
-import com.lyf.compose.router.AnimateContentSizeRouter
-import com.lyf.compose.router.AnimatedContentRouter
-import com.lyf.compose.router.AnimatedVisibilityRouter
+import com.lyf.compose.nav.AnimatableRouter
+import com.lyf.compose.nav.AnimateAsStateRouter
+import com.lyf.compose.nav.AnimateContentSizeRouter
+import com.lyf.compose.nav.AnimatedContentRouter
+import com.lyf.compose.nav.AnimatedVisibilityRouter
 import com.lyf.compose.test.randomColorBg
 
 @Composable

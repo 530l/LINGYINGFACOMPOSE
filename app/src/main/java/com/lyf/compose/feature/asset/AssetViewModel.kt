@@ -2,13 +2,13 @@ package com.lyf.compose.feature.asset
 
 import com.lyf.compose.core.data.bean.AsstBean
 import com.lyf.compose.core.vm.BaseViewModel
-import com.lyf.compose.router.DisposableEffectRouter
-import com.lyf.compose.router.LaunchedEffectRouter
-import com.lyf.compose.router.ProduceStateRouter
-import com.lyf.compose.router.RememberCoroutineScopeRouter
-import com.lyf.compose.router.RememberUpdatedStateRouter
-import com.lyf.compose.router.SideEffectRouter
-import com.lyf.compose.router.SnapshotFlowRouter
+import com.lyf.compose.nav.DisposableEffectRouter
+import com.lyf.compose.nav.LaunchedEffectRouter
+import com.lyf.compose.nav.ProduceStateRouter
+import com.lyf.compose.nav.RememberCoroutineScopeRouter
+import com.lyf.compose.nav.RememberUpdatedStateRouter
+import com.lyf.compose.nav.SideEffectRouter
+import com.lyf.compose.nav.SnapshotFlowRouter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

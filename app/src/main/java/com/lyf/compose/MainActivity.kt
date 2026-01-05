@@ -4,10 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.lyf.compose.core.theme.AppTheme
-import com.lyf.compose.router.RouterRegistrations
+import com.lyf.compose.nav.AppNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 // Compose 使用 Kotlin 编译器插件，首次运行需要：
@@ -18,20 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 注册应用内所有模块路由
-        RouterRegistrations.registerAll()
-
         enableEdgeToEdge()
         setContent {
             AppTheme { AppNavHost() }
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-
 }

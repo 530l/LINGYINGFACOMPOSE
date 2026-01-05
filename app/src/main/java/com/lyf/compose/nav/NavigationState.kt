@@ -1,4 +1,4 @@
-package com.lyf.compose.router
+package com.lyf.compose.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -6,6 +6,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
@@ -15,6 +16,16 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.lyf.compose.core.data.session.SessionManager
+
+interface Navigator {
+    fun navigate(key: NavKey)//  入栈
+    fun navigateRoot(key: NavKey)//  替换栈顶
+    fun pop()// 出栈
+}
+
+val LocalNavigator = staticCompositionLocalOf<Navigator> {
+    error("No Navigator provided")
+}
 
 /**
  * 保存导航状态，支持多回退栈（例如底部导航栏的每个 tab 都有自己的栈）
@@ -68,7 +79,8 @@ fun rememberNavigationState(
 class MultiStackNavigator(private val state: NavigationState) : Navigator {
 
     override fun navigate(key: NavKey) {
-        if (NavRegistry.requiresLogin(key) && !SessionManager.isLoggedIn()) {
+        // 增加 key != LoginRouter 判断，防止 LoginRouter 本身被配置为需要登录时导致死循环
+        if (key != LoginRouter && key.requiresLogin() && !SessionManager.isLoggedIn()) {
             navigate(LoginRouter)
             return
         }
@@ -84,7 +96,8 @@ class MultiStackNavigator(private val state: NavigationState) : Navigator {
     }
 
     override fun navigateRoot(key: NavKey) {
-        if (NavRegistry.requiresLogin(key) && !SessionManager.isLoggedIn()) {
+        // 增加 key != LoginRouter 判断，防止 LoginRouter 本身被配置为需要登录时导致死循环
+        if (key != LoginRouter && key.requiresLogin() && !SessionManager.isLoggedIn()) {
             navigateRoot(LoginRouter)
             return
         }
@@ -95,9 +108,17 @@ class MultiStackNavigator(private val state: NavigationState) : Navigator {
                 clear()
                 add(key)
             }
+            // 同时重置该 Tab 的子栈到初始状态
+            state.subStacks[key]?.apply {
+                clear()
+                add(key)
+            }
         } else {
-            // 如果 key 不是 TopLevelKey，作为普通跳转处理
-            goToKey(key)
+            // 如果 key 不是 TopLevelKey，作为普通跳转处理，但清空当前栈
+            state.currentSubStack.apply {
+                clear()
+                add(key)
+            }
         }
     }
 
@@ -114,7 +135,8 @@ class MultiStackNavigator(private val state: NavigationState) : Navigator {
 
     private fun goToKey(key: NavKey) {
         state.currentSubStack.apply {
-            remove(key) // 避免重复
+            // 如果不需要 "Move to Front" (把旧的移到最前) 的行为，可以去掉 remove(key)
+            // remove(key) // 避免重复
             add(key)
         }
     }

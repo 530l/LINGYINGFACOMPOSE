@@ -1,7 +1,8 @@
-package com.lyf.compose
+package com.lyf.compose.app
 
 import android.app.Application
 import android.content.res.Configuration
+import com.lyf.compose.BuildConfig
 import com.lyf.compose.utils.storage.MMKVUtils
 import com.lyf.compose.utils.toast.ToastUtils
 import dagger.hilt.android.HiltAndroidApp
@@ -38,7 +39,7 @@ class Application : Application() {
      */
     private fun initLog() {
         if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
+            Timber.Forest.plant(Timber.DebugTree())
         }
     }
 

@@ -1,4 +1,4 @@
-package com.lyf.compose
+package com.lyf.compose.nav
 
 import android.app.Activity
 import android.content.Intent
@@ -13,21 +13,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.hjq.toast.Toaster
 import com.lyf.compose.core.data.session.SessionManager
+import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.animated.AnimatableScreen
+import com.lyf.compose.feature.animated.AnimateAsStateScreen
+import com.lyf.compose.feature.animated.AnimateContentSizeScreen
+import com.lyf.compose.feature.animated.AnimatedContentScreen
+import com.lyf.compose.feature.animated.AnimatedVisibilityScreen
+import com.lyf.compose.feature.asset.DisposableEffectScreen
+import com.lyf.compose.feature.asset.LaunchedEffectScreen
+import com.lyf.compose.feature.asset.RememberUpdatedStateScreen
+import com.lyf.compose.feature.asset.SideEffectScreen
+import com.lyf.compose.feature.login.LoginScreen
+import com.lyf.compose.feature.refresh.RefreshScreen
 import com.lyf.compose.feature.splash.WelcomeScreen
-import com.lyf.compose.router.HomeScreenRouter
-import com.lyf.compose.router.LocalNavigator
-import com.lyf.compose.router.LoginRouter
-import com.lyf.compose.router.MultiStackNavigator
-import com.lyf.compose.router.NavRegistry
-import com.lyf.compose.router.NavigationState
-import com.lyf.compose.router.SplashRouter
-import com.lyf.compose.router.rememberNavigationState
-import com.lyf.compose.router.toEntries
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -50,18 +53,31 @@ fun AppNavHost(startDestination: NavKey = SplashRouter) {
     val handleBack = rememberBackPressHandler(navState, navigator)
 
     // 6. 渲染导航
+    val entryProvider = entryProvider {
+        entry<SplashRouter> {
+            WelcomeScreen(
+                navigateToNext = { splashFinished = true }
+            )
+        }
+        entry<HomeScreenRouter> { HomeScreen() }
+        entry<LoginRouter> { LoginScreen(onLoginSuccess = { }) }
+        entry<SideEffectRouter> { SideEffectScreen() }
+        entry<LaunchedEffectRouter> { LaunchedEffectScreen() }
+        entry<DisposableEffectRouter> { DisposableEffectScreen() }
+        entry<RememberUpdatedStateRouter> { RememberUpdatedStateScreen() }
+        entry<RefreshRouter> { RefreshScreen() }
+        entry<AnimatedVisibilityRouter> { AnimatedVisibilityScreen() }
+        entry<AnimateContentSizeRouter> { AnimateContentSizeScreen() }
+        entry<AnimatedContentRouter> { AnimatedContentScreen() }
+        entry<AnimateAsStateRouter> { AnimateAsStateScreen() }
+        entry<AnimatableRouter> { AnimatableScreen() }
+    }
+
+    val entries = navState.toEntries(entryProvider)
+
     CompositionLocalProvider(LocalNavigator provides navigator) {
         NavDisplay(
-            entries = navState.toEntries { key ->
-                when (key) {
-                    is SplashRouter -> NavEntry(key) {
-                        WelcomeScreen(
-                            navigateToNext = { splashFinished = true }
-                        )
-                    }
-                    else -> NavRegistry.createEntry(key)
-                }
-            },
+            entries = entries,
             onBack = handleBack
         )
     }
@@ -93,7 +109,7 @@ private fun HandleAuthNavigation(
         }
 
         // 2. 登出/Session过期逻辑：如果在需要登录的页面但未登录 -> 去登录页
-        if (!isLoggedIn && NavRegistry.requiresLogin(current)) {
+        if (!isLoggedIn && current.requiresLogin()) {
             navigator.navigateRoot(LoginRouter)
             return@LaunchedEffect
         }
@@ -173,4 +189,3 @@ private fun rememberBackPressHandler(
 
     return handleBack
 }
-

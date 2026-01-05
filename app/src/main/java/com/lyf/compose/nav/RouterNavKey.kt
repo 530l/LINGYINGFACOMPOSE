@@ -1,4 +1,4 @@
-package com.lyf.compose.router
+package com.lyf.compose.nav
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
@@ -10,11 +10,9 @@ data object SplashRouter : NavKey
 @Serializable
 data object HomeScreenRouter : NavKey
 
-
 @Serializable
 data object LoginRouter : NavKey
 
-/////////////
 @Serializable
 data object SideEffectRouter : NavKey
 
@@ -58,3 +56,7 @@ data object AnimateAsStateRouter : NavKey
 
 @Serializable
 data object AnimatableRouter : NavKey
+
+fun NavKey.requiresLogin(): Boolean {
+    return this is HomeScreenRouter
+}
