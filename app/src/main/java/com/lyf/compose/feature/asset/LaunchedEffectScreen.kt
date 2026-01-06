@@ -54,7 +54,7 @@ fun LaunchedEffectScreen() {
         Timber.d("LaunchedEffect 重组一次 count1 $count1")
     }
 
-    AppScaffold(onBackClick = { navigator.pop() }) {
+    AppScaffold(onBackClick = { navigator.onBack() }) {
       Column(modifier = Modifier.fillMaxSize()) {
           Button(onClick = { count1++ }) {
               Text(text = "count1: $count1")

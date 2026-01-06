@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
 import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
-import com.lyf.compose.nav.AnimatableRouter
-import com.lyf.compose.nav.AnimateAsStateRouter
-import com.lyf.compose.nav.AnimateContentSizeRouter
-import com.lyf.compose.nav.AnimatedContentRouter
-import com.lyf.compose.nav.AnimatedVisibilityRouter
+import com.lyf.compose.newNav3.AnimatableRouter
+import com.lyf.compose.newNav3.AnimateAsStateNavKey
+import com.lyf.compose.newNav3.AnimateContentSizeNavKey
+import com.lyf.compose.newNav3.AnimatedContentNavKey
+import com.lyf.compose.newNav3.AnimatedVisibilityNavKey
 import com.lyf.compose.test.randomColorBg
 
 @Composable
@@ -48,16 +48,16 @@ fun CreateScreen() {
                 Box(modifier = Modifier.clickable {
                     position = index
                     if (index == 0) {
-                        navigator.navigate(AnimatedVisibilityRouter)
+                        navigator.navigate(AnimatedVisibilityNavKey)
                     }
                     if (index == 1) {
-                        navigator.navigate(AnimateContentSizeRouter)
+                        navigator.navigate(AnimateContentSizeNavKey)
                     }
                     if (index == 2) {
-                        navigator.navigate(AnimatedContentRouter)
+                        navigator.navigate(AnimatedContentNavKey)
                     }
                     if (index == 3) {
-                        navigator.navigate(AnimateAsStateRouter)
+                        navigator.navigate(AnimateAsStateNavKey)
                     }
                     if (index == 4) {
                         navigator.navigate(AnimatableRouter)

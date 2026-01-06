@@ -31,7 +31,7 @@ import com.lyf.compose.core.theme.PrimaryLight
 import com.lyf.compose.core.theme.ShapeLarge
 import com.lyf.compose.core.theme.TextPrimaryLight
 import com.lyf.compose.core.theme.TextWhite
-import com.lyf.compose.nav.RefreshRouter
+import com.lyf.compose.newNav3.RefreshNavKey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +81,7 @@ fun AssetScreen(
                         .padding(12.dp)
                         .clickable(onClick = {
 //                            if (it.id <= 3) navigator.navigate(it.navKey)
-                            navigator.navigate(RefreshRouter)
+                            navigator.navigate(RefreshNavKey)
                         })
                 ) {
                     Text(text = it.title, fontSize = 18.sp, color = TextWhite)

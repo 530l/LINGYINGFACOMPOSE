@@ -23,7 +23,7 @@ val externalState = mutableListOf<String>()
 @Composable
 fun SideEffectScreen() {
     val navigator = LocalNavigator.current
-    AppScaffold(onBackClick = { navigator.pop() }) {
+    AppScaffold(onBackClick = { navigator.onBack() }) {
         var count by remember { mutableIntStateOf(0) }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {

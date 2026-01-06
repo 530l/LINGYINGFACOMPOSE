@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.lyf.compose.core.theme.AppTheme
-import com.lyf.compose.nav.AppNavHost
+import com.lyf.compose.newNav3.Nav3App
 import dagger.hilt.android.AndroidEntryPoint
 
 // Compose 使用 Kotlin 编译器插件，首次运行需要：
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppTheme { AppNavHost() }
+            AppTheme { Nav3App() }
         }
     }
 }
