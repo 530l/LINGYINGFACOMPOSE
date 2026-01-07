@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import timber.log.Timber
 
@@ -21,9 +20,8 @@ import timber.log.Timber
 val externalState = mutableListOf<String>()
 
 @Composable
-fun SideEffectScreen() {
-    val navigator = LocalNavigator.current
-    AppScaffold(onBackClick = { navigator.onBack() }) {
+fun SideEffectScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
         var count by remember { mutableIntStateOf(0) }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {

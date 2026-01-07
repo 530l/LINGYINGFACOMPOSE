@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 
 @Composable
-fun AnimatedContentScreen() {
-    AppScaffold {
+fun AnimatedContentScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
         DynamicTabContent()
     }
     //todo 前面所学习的所有动画效果都是一次性的，即播放完成之后就自动停止了。

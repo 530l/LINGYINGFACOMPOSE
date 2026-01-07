@@ -39,7 +39,10 @@ import timber.log.Timber
 
 
 @Composable
-fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
+fun RefreshScreen(
+    viewModel: RefreshViewModel = hiltViewModel(),
+    onBack: () -> Unit
+) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -53,9 +56,14 @@ fun RefreshScreen(viewModel: RefreshViewModel = hiltViewModel()) {
 
     AppScaffold(
         titleText = null,
+        onBackClick = onBack,
         topBar = {
             Column {
-                CenterTopAppBar(titleText = "文章列表", showBackIcon = false)
+                CenterTopAppBar(
+                    titleText = "文章列表",
+                    showBackIcon = true,
+                    onBackClick = onBack
+                )
                 TabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = MaterialTheme.colorScheme.primaryContainer

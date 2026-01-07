@@ -37,9 +37,15 @@ import com.lyf.compose.feature.mine.MineScreen
 import kotlinx.coroutines.launch
 
 
+import androidx.navigation3.runtime.NavKey
+
 @Preview
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigate: (NavKey) -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
 
     val tabs by viewModel.homeTabs.collectAsState()
 
@@ -73,9 +79,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         ) { page ->
             when (tabs[page].id) {
                 "1" -> ExplorerScreen()
-                "2" -> CreateScreen()
-                "3" -> AssetScreen()
-                "4" -> MineScreen()
+                "2" -> CreateScreen(onNavigate = onNavigate)
+                "3" -> AssetScreen(onNavigate = onNavigate)
+                "4" -> MineScreen(onLogout = onLogout)
             }
         }
 

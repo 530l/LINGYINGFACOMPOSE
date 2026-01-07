@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
-import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import com.lyf.compose.newNav3.AnimatableRouter
 import com.lyf.compose.newNav3.AnimateAsStateNavKey
@@ -33,10 +32,10 @@ import com.lyf.compose.newNav3.AnimateContentSizeNavKey
 import com.lyf.compose.newNav3.AnimatedContentNavKey
 import com.lyf.compose.newNav3.AnimatedVisibilityNavKey
 import com.lyf.compose.test.randomColorBg
+import androidx.navigation3.runtime.NavKey
 
 @Composable
-fun CreateScreen() {
-    val navigator = LocalNavigator.current
+fun CreateScreen(onNavigate: (NavKey) -> Unit) {
     AppScaffold {
         var position by remember { mutableIntStateOf(0) }
         LazyColumn(
@@ -48,19 +47,19 @@ fun CreateScreen() {
                 Box(modifier = Modifier.clickable {
                     position = index
                     if (index == 0) {
-                        navigator.navigate(AnimatedVisibilityNavKey)
+                        onNavigate(AnimatedVisibilityNavKey)
                     }
                     if (index == 1) {
-                        navigator.navigate(AnimateContentSizeNavKey)
+                        onNavigate(AnimateContentSizeNavKey)
                     }
                     if (index == 2) {
-                        navigator.navigate(AnimatedContentNavKey)
+                        onNavigate(AnimatedContentNavKey)
                     }
                     if (index == 3) {
-                        navigator.navigate(AnimateAsStateNavKey)
+                        onNavigate(AnimateAsStateNavKey)
                     }
                     if (index == 4) {
-                        navigator.navigate(AnimatableRouter)
+                        onNavigate(AnimatableRouter)
                     }
                 }) {
                     Row(

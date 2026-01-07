@@ -29,19 +29,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyf.compose.R
+import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 
 //todo Compose的动画功能高度依赖Compose的State概念
 @Composable
-fun AnimatedVisibilityScreen() {
-    val state = rememberLazyListState()
-    Box(modifier = Modifier.background(Color.White)) {
-        ScrollableList(state)
-        val isExpand by remember {
-            derivedStateOf { state.firstVisibleItemIndex == 0 }
+fun AnimatedVisibilityScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
+        val state = rememberLazyListState()
+        Box(modifier = Modifier.background(Color.White)) {
+            ScrollableList(state)
+            val isExpand by remember {
+                derivedStateOf { state.firstVisibleItemIndex == 0 }
+            }
+            EditFab(isExpand, Modifier
+                .align(Alignment.BottomEnd)
+                .padding(20.dp))
         }
-        EditFab(isExpand, Modifier
-            .align(Alignment.BottomEnd)
-            .padding(20.dp))
     }
 }
 

@@ -10,17 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
-fun RememberUpdatedStateScreen() {
-    val coroutineScope = rememberCoroutineScope()
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(50.dp))
-        Text(
-            """
+fun RememberUpdatedStateScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
+        val coroutineScope = rememberCoroutineScope()
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                """
             如果说LaunchedEffect是用于执行那些短期一次性的协程任务，
             那么rememberCoroutineScope适用于需要启动协程并在 Composable 生命周期内持续存在的场景。
             简单来说， rememberCoroutineScope在Composable组件中创建和管理一个协程作用域，
@@ -44,4 +45,4 @@ fun RememberUpdatedStateScreen() {
             )
         }
     }
-}
+}}

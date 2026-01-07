@@ -1,33 +1,36 @@
 package com.lyf.compose.newNav3
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.*
 import androidx.navigation3.runtime.serialization.NavKeySerializer
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.compose.serialization.serializers.MutableStateSerializer
-import kotlinx.serialization.Serializable
+import com.lyf.compose.feature.splash.WelcomeScreen
+import com.lyf.compose.feature.login.LoginScreen
+import com.lyf.compose.feature.HomeScreen
+import com.lyf.compose.feature.refresh.RefreshScreen
+import com.lyf.compose.feature.asset.SideEffectScreen
+import com.lyf.compose.feature.asset.LaunchedEffectScreen
+import com.lyf.compose.feature.asset.DisposableEffectScreen
+import com.lyf.compose.feature.asset.RememberUpdatedStateScreen
+import com.lyf.compose.feature.animated.AnimatableScreen
+import com.lyf.compose.feature.animated.AnimateAsStateScreen
+import com.lyf.compose.feature.animated.AnimateContentSizeScreen
+import com.lyf.compose.feature.animated.AnimatedContentScreen
+import com.lyf.compose.feature.animated.AnimatedVisibilityScreen
 
-/* ------------------------- */
-/* NavigationState 创建 */
-/* ------------------------- */
 
+/**
+ * @param startRoute : 起始路由
+ * @param topLevelRoutes : 顶级路由集合
+ * @return NavigationState: 导航状态
+ */
 @Composable
-fun rememberNavigationState(
-    startRoute: NavKey,
-    topLevelRoutes: Set<NavKey>
-): NavigationState {
-
+fun rememberNavigationState(startRoute: NavKey, topLevelRoutes: Set<NavKey>): NavigationState {
     val topLevelRoute = rememberSerializable(
         startRoute,
         serializer = MutableStateSerializer(NavKeySerializer())
@@ -49,7 +52,7 @@ fun rememberNavigationState(
 }
 
 /* ------------------------- */
-/* NavigationState */
+/* NavigationState 导航状态   */
 /* ------------------------- */
 
 class NavigationState(
@@ -93,7 +96,7 @@ fun NavigationState.toEntries(
 }
 
 /* ------------------------- */
-/* Navigator */
+/* Navigator 导航员 */
 /* ------------------------- */
 
 class Navigator(private val state: NavigationState) {
@@ -117,8 +120,11 @@ class Navigator(private val state: NavigationState) {
             currentStack.removeLastOrNull()
         }
     }
-}
 
+    fun onBack() {
+        goBack()
+    }
+}
 
 
 /* ------------------------- */
@@ -129,42 +135,81 @@ class Navigator(private val state: NavigationState) {
 fun Nav3App() {
 
     val navigationState = rememberNavigationState(
-        startRoute = Home,
-        topLevelRoutes = setOf(Home)
+        startRoute = SplashNavKey,
+        topLevelRoutes = setOf(SplashNavKey, HomeScreenNavKey)
     )
 
     val navigator = remember { Navigator(navigationState) }
 
     val entryProvider = entryProvider {
 
-        entry<Home> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Gray)
-                    .clickable {
-                        navigator.navigate(ProductDetail("ABC"))
-                    },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Home")
-            }
+        entry<SplashNavKey> {
+            WelcomeScreen(
+                navigateToNext = {
+                    navigator.navigate(HomeScreenNavKey)
+                }
+            )
         }
 
-        entry<ProductDetail> { key ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .clickable {
-                        navigator.goBack()
-                    },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Product ${key.id}")
-            }
+        entry<HomeScreenNavKey> {
+            HomeScreen(
+                onNavigate = { key ->
+                    navigator.navigate(key)
+                },
+                onLogout = {
+                    navigator.navigate(LoginNavKey)
+                }
+            )
+        }
+
+        entry<LoginNavKey> {
+            LoginScreen(
+                onLoginSuccess = {
+                    navigator.navigate(HomeScreenNavKey)
+                }
+            )
+        }
+
+        entry<RefreshNavKey> {
+            RefreshScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<SideEffectNavKey> {
+            SideEffectScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<LaunchedEffectNavKey> {
+            LaunchedEffectScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<DisposableEffectNavKey> {
+            DisposableEffectScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<RememberUpdatedStateNavKey> {
+            RememberUpdatedStateScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<AnimatableRouter> {
+            AnimatableScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<AnimateAsStateNavKey> {
+            AnimateAsStateScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<AnimateContentSizeNavKey> {
+            AnimateContentSizeScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<AnimatedContentNavKey> {
+            AnimatedContentScreen(onBack = { navigator.onBack() })
+        }
+
+        entry<AnimatedVisibilityNavKey> {
+            AnimatedVisibilityScreen(
+                onBack = { navigator.onBack() }
+            )
         }
     }
 

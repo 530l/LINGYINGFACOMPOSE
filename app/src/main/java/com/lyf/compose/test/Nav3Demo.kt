@@ -16,7 +16,6 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.lyf.compose.newNav3.ProductDetail
 import kotlinx.serialization.Serializable
 
 
@@ -24,7 +23,6 @@ import kotlinx.serialization.Serializable
 // 定义用于识别内容的键
 @Serializable
 data object ProductList1 : NavKey
-
 @Serializable
 data class ProductDetail1(val id: String) : NavKey
 
@@ -55,7 +53,7 @@ fun StudyNav3DemoApp() {
                     .fillMaxSize()
                     .background(Color.Gray)
                     .clickable {
-                        backStack.add(ProductDetail(id = "ABC"))
+                        backStack.add(ProductDetail1(id = "ABC"))
                     }
             ) {
 

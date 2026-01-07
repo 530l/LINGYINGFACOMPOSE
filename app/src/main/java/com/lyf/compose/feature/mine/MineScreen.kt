@@ -32,7 +32,7 @@ import com.lyf.compose.core.data.session.SessionManager
 import kotlinx.coroutines.delay
 
 @Composable
-fun MineScreen() {
+fun MineScreen(onLogout: () -> Unit) {
     // 弹窗是否显示（普通 remember 足够；是否跨配置变化保存可后续再加）
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -95,6 +95,7 @@ fun MineScreen() {
             //Toaster.show("已退出登录")
             // 重置标记，避免重复
             logoutConfirmed = false
+            onLogout()
         }
     }
 

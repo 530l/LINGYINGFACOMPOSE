@@ -13,39 +13,40 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import timber.log.Timber
 
 @Composable
-fun DisposableEffectScreen() {
-    val context = LocalContext.current
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+fun DisposableEffectScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
+        val context = LocalContext.current
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    //当DisposableEffectScreen 入栈的时候 会执行网络监听，
-    // 当DisposableEffectScreen 出栈的时候 会执行网络监听的注销
-    //21:48:22.844  D  NetworkState 网络已连接
-    //21:48:35.357  D  NetworkState注销网络监听器
-    DisposableEffect(Unit) {
-        val networkCallback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                Timber.d("NetworkState 网络已连接")
+        //当DisposableEffectScreen 入栈的时候 会执行网络监听，
+        // 当DisposableEffectScreen 出栈的时候 会执行网络监听的注销
+        //21:48:22.844  D  NetworkState 网络已连接
+        //21:48:35.357  D  NetworkState注销网络监听器
+        DisposableEffect(Unit) {
+            val networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    Timber.d("NetworkState 网络已连接")
+                }
+
+                override fun onLost(network: Network) {
+                    Timber.d("NetworkState网络已断开")
+                }
             }
-
-            override fun onLost(network: Network) {
-                Timber.d("NetworkState网络已断开")
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+            onDispose {
+                Timber.d("NetworkState注销网络监听器")
+                connectivityManager.unregisterNetworkCallback(networkCallback)
             }
         }
-        connectivityManager.registerDefaultNetworkCallback(networkCallback)
-        onDispose {
-            Timber.d("NetworkState注销网络监听器")
-            connectivityManager.unregisterNetworkCallback(networkCallback)
-        }
-    }
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(60.dp))
-        Text("通过onDisposable注销监听器，防止内存泄漏")
-        Text(
-            """
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text("通过onDisposable注销监听器，防止内存泄漏")
+            Text(
+                """
         DisposableEffect 作为另一个与生命周期相关的 API，
         它和LaunchedEffect类似，
         而LaunchedEffect大家可以理解为协程版的DisposableEffect。
@@ -58,4 +59,4 @@ fun DisposableEffectScreen() {
         )
     }
 }
-
+    }

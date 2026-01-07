@@ -59,8 +59,8 @@ import kotlin.math.roundToInt
  */
 //todo animateAsState = ValueAnimator 类似属性动画
 @Composable
-fun AnimateAsStateScreen() {
-    AppScaffold {
+fun AnimateAsStateScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)

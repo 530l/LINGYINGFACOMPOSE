@@ -41,8 +41,8 @@ import kotlinx.coroutines.launch
  */
 
 @Composable
-fun AnimatableScreen() {
-    AppScaffold {
+fun AnimatableScreen(onBack: () -> Unit) {
+    AppScaffold(onBackClick = onBack) {
         val animatableSize = remember {
             Animatable(initialValue = 200.dp, typeConverter = Dp.VectorConverter)
         }

@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lyf.compose.nav.LocalNavigator
 import com.lyf.compose.core.ui.components.scaffold.AppScaffold
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -31,8 +30,7 @@ suspend fun fetchDataFromNetwork(): String {
 }
 
 @Composable
-fun LaunchedEffectScreen() {
-    val navigator = LocalNavigator.current
+fun LaunchedEffectScreen(onBack: () -> Unit) {
     var data by remember { mutableStateOf("Loading...") }  // 用于保存加载的数据
     var isLoading by remember { mutableStateOf(true) } // 用于记录加载状态
     LaunchedEffect(Unit) {// 使用 LaunchedEffect 加载数据
@@ -54,7 +52,7 @@ fun LaunchedEffectScreen() {
         Timber.d("LaunchedEffect 重组一次 count1 $count1")
     }
 
-    AppScaffold(onBackClick = { navigator.onBack() }) {
+    AppScaffold(onBackClick = onBack) {
       Column(modifier = Modifier.fillMaxSize()) {
           Button(onClick = { count1++ }) {
               Text(text = "count1: $count1")
