@@ -3,12 +3,13 @@ package com.lyf.compose.feature.explore
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lyf.compose.core.data.bean.ExploreBannerItem
-import com.lyf.compose.core.data.bean.ExploreMenuItem
-import com.lyf.compose.core.data.bean.ExploreTabItem
-import com.lyf.compose.core.data.bean.ExploreUiState
-import com.lyf.compose.core.data.bean.V3ExploreActivityBean
-import com.lyf.compose.core.data.bean.V3ExploreRecommendBean
+import com.lyf.compose.data.bean.ExploreBannerItem
+import com.lyf.compose.data.bean.ExploreMenuItem
+import com.lyf.compose.data.bean.ExploreTabItem
+import com.lyf.compose.data.bean.ExploreUiState
+import com.lyf.compose.data.bean.V3ExploreActivityBean
+import com.lyf.compose.data.bean.V3ExploreRecommendBean
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

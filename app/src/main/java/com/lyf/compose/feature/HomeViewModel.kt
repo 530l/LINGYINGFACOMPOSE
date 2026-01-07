@@ -2,10 +2,8 @@ package com.lyf.compose.feature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lyf.compose.core.data.bean.ArticleBean
-import com.lyf.compose.core.data.bean.HomeTab
-import com.lyf.compose.core.data.network.NetworkResult
-import com.lyf.compose.core.data.network.call
+import com.lyf.compose.data.bean.HomeTab
+
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow

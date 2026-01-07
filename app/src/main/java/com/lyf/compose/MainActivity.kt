@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.lyf.compose.core.theme.AppTheme
-import com.lyf.compose.newNav3.Nav3App
+import com.lyf.compose.nav.Nav3App
+import com.lyf.compose.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 // Compose 使用 Kotlin 编译器插件，首次运行需要：

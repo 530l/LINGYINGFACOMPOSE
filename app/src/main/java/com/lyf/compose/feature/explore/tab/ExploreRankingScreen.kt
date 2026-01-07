@@ -8,8 +8,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lyf.compose.core.data.bean.MusicRankingItem
-import com.lyf.compose.core.data.bean.MusicRankingModule
+import com.lyf.compose.data.bean.MusicRankingItem
+import com.lyf.compose.data.bean.MusicRankingModule
+
 
 @Composable
 fun ExploreRankingScreen() {
@@ -31,7 +32,7 @@ fun ExploreRankingScreen() {
                 rankingModule = MusicRankingModule(
                     title = "周榜音乐",
                     items = listOf(
-                        MusicRankingItem(1, "文字最多显示到这里", "文字最多..." ,),
+                        MusicRankingItem(1, "文字最多显示到这里", "文字最多...",),
                         MusicRankingItem(2, "伤心的人别停慢歌伤心的人别停慢歌", "五月天"),
                         MusicRankingItem(3, "Say you Love Me Say you Love Me", "Patti Ausetin")
                     ),

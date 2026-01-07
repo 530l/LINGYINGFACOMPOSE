@@ -26,8 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.lyf.compose.core.data.bean.MusicRankingItem
-import com.lyf.compose.core.data.bean.MusicRankingModule
+import com.lyf.compose.data.bean.MusicRankingItem
+import com.lyf.compose.data.bean.MusicRankingModule
 
 
 /**

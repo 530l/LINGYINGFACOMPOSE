@@ -39,7 +39,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.lyf.compose.R
-import com.lyf.compose.core.data.bean.V3ExploreRecommendBean
+import com.lyf.compose.data.bean.V3ExploreRecommendBean
 import com.lyf.compose.utils.LikeCountFormatter
 
 // 这些常量放在文件顶部，避免在每次重组时重复创建 shape/brush 等对象（小优化，但很常见）

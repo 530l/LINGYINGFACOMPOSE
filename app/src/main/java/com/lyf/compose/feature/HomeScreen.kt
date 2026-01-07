@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.lyf.compose.R
-import com.lyf.compose.core.data.bean.HomeTab
 import com.lyf.compose.feature.asset.AssetScreen
 import com.lyf.compose.feature.create.CreateScreen
 import com.lyf.compose.feature.explore.ExplorerScreen
@@ -38,6 +37,7 @@ import kotlinx.coroutines.launch
 
 
 import androidx.navigation3.runtime.NavKey
+import com.lyf.compose.data.bean.HomeTab
 
 @Preview
 @Composable

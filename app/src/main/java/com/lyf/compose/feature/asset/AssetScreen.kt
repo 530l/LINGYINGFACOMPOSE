@@ -24,19 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lyf.compose.core.theme.BgContentLight
-import com.lyf.compose.core.theme.BgWhiteLight
-import com.lyf.compose.core.theme.PrimaryLight
-import com.lyf.compose.core.theme.ShapeLarge
-import com.lyf.compose.core.theme.TextPrimaryLight
-import com.lyf.compose.core.theme.TextWhite
-import com.lyf.compose.newNav3.RefreshNavKey
 import androidx.navigation3.runtime.NavKey
+import com.lyf.compose.theme.BgContentLight
+import com.lyf.compose.theme.BgWhiteLight
+import com.lyf.compose.theme.PrimaryLight
+import com.lyf.compose.theme.ShapeLarge
+import com.lyf.compose.theme.TextPrimaryLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AssetScreen(
-    viewModel: AssetViewModel = hiltViewModel(),
+    viewModel: AssetViewModelA = hiltViewModel(),
     onNavigate: (NavKey) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -83,8 +81,8 @@ fun AssetScreen(
                             onNavigate(it.navKey)
                         })
                 ) {
-                    Text(text = it.title, fontSize = 18.sp, color = TextWhite)
-                    Text(text = it.subTitle, fontSize = 14.sp, color = TextWhite)
+                    Text(text = it.title, fontSize = 18.sp,)
+                    Text(text = it.subTitle, fontSize = 14.sp,)
                 }
             }
         }
